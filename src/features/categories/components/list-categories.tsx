@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { PlusCircle, Pen, Search } from "lucide-react";
@@ -34,10 +34,11 @@ import {
   PaginationItem,
   PaginationLink,
   PaginationNext,
-  PaginationPrevious
+  PaginationPrevious,
 } from "@/components/ui/pagination";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { toast } from "react-toastify";
+import { deleteCategoryAction } from "../actions/category.actions";
 
 interface ListCategoriesProps {
   initialData: PageResponse<CategoryResDto>;
@@ -128,11 +129,23 @@ export default function ListCategories({
     setDeletingId(categoryId);
     startTransition(async () => {
       try {
-        // Simulation de suppression (remplacer par l'action réelle)
-        toast.success("Catégorie supprimée avec succès !");
-        // Ici on pourrait filtrer la liste si elle était dynamique
+        const result = await deleteCategoryAction(categoryId);
+        if (result.success) {
+          toast.success("Catégorie supprimée avec succès !");
+          setCategories((prev) => ({
+            ...prev,
+            content: prev.content.filter((u) => u.id !== categoryId),
+            totalElements: prev.totalElements - 1,
+          }));
+        } else {
+          toast.error(result.error || "Erreur lors de la suppression");
+        }
       } catch (error) {
-        toast.error("Erreur lors de la suppression");
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Une erreur est survenue lors de la suppression",
+        );
       } finally {
         setDeletingId(null);
       }
@@ -143,9 +156,7 @@ export default function ListCategories({
     <Card>
       <CardHeader>
         <CardTitle>Catégories</CardTitle>
-        <CardDescription>
-          Gérez les catégories de produits.
-        </CardDescription>
+        <CardDescription>Gérez les catégories de produits.</CardDescription>
       </CardHeader>
       <CardContent>
         {/* Filtres + bouton ajout */}
@@ -194,9 +205,7 @@ export default function ListCategories({
             {categories.content.length > 0 ? (
               categories.content.map((category) => (
                 <TableRow key={category.id}>
-                  <TableCell className="font-medium">
-                    {category.name}
-                  </TableCell>
+                  <TableCell className="font-medium">{category.name}</TableCell>
                   <TableCell title={category.description}>
                     {truncateText(category.description, 50)}
                   </TableCell>
@@ -257,7 +266,9 @@ export default function ListCategories({
                 {/* Précédent */}
                 <PaginationItem>
                   <PaginationPrevious
-                    href={categories.first ? "#" : buildPageUrl(currentPage - 1)}
+                    href={
+                      categories.first ? "#" : buildPageUrl(currentPage - 1)
+                    }
                     aria-disabled={categories.first}
                     className={
                       categories.first ? "pointer-events-none opacity-50" : ""
