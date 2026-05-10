@@ -56,7 +56,7 @@ interface ListUsersProps {
   currentSearch: string;
 }
 
-export default function ListUsers({
+export default function UserList({
   initialData,
   currentPage,
   currentRole,
