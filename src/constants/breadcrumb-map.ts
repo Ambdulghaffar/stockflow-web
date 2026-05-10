@@ -1,10 +1,11 @@
 export const BREADCRUMB_MAP: Record<string, string> = {
   dashboard: "Tableau de bord",
   users: "Utilisateurs",
+  categories: "Catégories",
+  products: "Produits",
   update: "Éditer",
   edit: "Éditer",
   create: "Créer",
-  products: "Produits",
   orders: "Commandes",
   suppliers: "Fournisseurs",
   marketing: "Marketing",

@@ -23,11 +23,11 @@ export const NavMainAdmin = [
     items: [
       {
         title: "Produits",
-        url: "#",
+        url: ROUTES.DASHBOARD_PRODUCTS,
       },
       {
         title: "Catégories",
-        url: "#",
+        url: ROUTES.DASHBOARD_CATEGORIES,
       },
     ],
   },

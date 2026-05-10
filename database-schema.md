@@ -29,27 +29,19 @@ Table des utilisateurs du système avec gestion des rôles.
 ---
 
 ### 2. Table `categories`
-Table des catégories de produits avec support des sous-catégories.
+Table des catégories de produits.
 
 | Colonne | Type | Contraintes | Description |
 |---------|------|-------------|-------------|
 | `id` | INTEGER | PRIMARY KEY, AUTO_INCREMENT | Identifiant unique de la catégorie |
-| `name` | VARCHAR(100) | NOT NULL | Nom de la catégorie |
-| `description` | TEXT | NULL | Description de la catégorie |
-| `parent_id` | INTEGER | NULL, FOREIGN KEY → categories(id) | Catégorie parente (pour hiérarchie) |
-| `slug` | VARCHAR(120) | UNIQUE, NOT NULL | Slug URL-friendly |
+| `name` | VARCHAR(255) | NOT NULL, UNIQUE | Nom de la catégorie |
+| `description` | VARCHAR(500) | NULL | Description de la catégorie |
 | `image_url` | VARCHAR(500) | NULL | URL de l'image de la catégorie |
-| `is_active` | BOOLEAN | NOT NULL, DEFAULT TRUE | Catégorie active |
-| `sort_order` | INTEGER | NOT NULL, DEFAULT 0 | Ordre d'affichage |
-| `created_by` | INTEGER | NOT NULL, FOREIGN KEY → users(id) | Utilisateur qui a créé la catégorie |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date de création |
-| `updated_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Date de modification |
+| `created_at` | TIMESTAMP | NULL | Date de création |
+| `updated_at` | TIMESTAMP | NULL | Date de modification |
 
 **Index :**
-- INDEX `idx_categories_parent_id` sur `parent_id`
-- INDEX `idx_categories_slug` sur `slug`
-- INDEX `idx_categories_is_active` sur `is_active`
-- INDEX `idx_categories_sort_order` sur `sort_order`
+- INDEX `idx_categories_name` sur `name`
 
 ---
 
@@ -60,32 +52,18 @@ Table principale des produits avec gestion du stock.
 |---------|------|-------------|-------------|
 | `id` | INTEGER | PRIMARY KEY, AUTO_INCREMENT | Identifiant unique du produit |
 | `name` | VARCHAR(255) | NOT NULL | Nom du produit |
-| `description` | TEXT | NULL | Description détaillée |
-| `sku` | VARCHAR(100) | UNIQUE, NOT NULL | Code SKU unique |
-| `barcode` | VARCHAR(100) | UNIQUE, NULL | Code-barres |
-| `price` | DECIMAL(10,2) | NOT NULL, DEFAULT 0.00 | Prix unitaire |
-| `cost_price` | DECIMAL(10,2) | NULL | Prix d'achat/coût |
-| `stock_quantity` | INTEGER | NOT NULL, DEFAULT 0 | Quantité en stock |
-| `min_stock_level` | INTEGER | NOT NULL, DEFAULT 0 | Seuil minimum de stock |
-| `max_stock_level` | INTEGER | NULL | Seuil maximum de stock |
-| `category_id` | INTEGER | NOT NULL, FOREIGN KEY → categories(id) | Catégorie du produit |
+| `description` | VARCHAR(1000) | NULL | Description détaillée |
+| `price` | DECIMAL(10,2) | NOT NULL | Prix unitaire |
+| `stock` | INTEGER | NOT NULL | Quantité en stock |
 | `image_url` | VARCHAR(500) | NULL | URL de l'image principale |
-| `weight` | DECIMAL(8,3) | NULL | Poids en kg |
-| `dimensions` | VARCHAR(50) | NULL | Dimensions (LxWxH) |
-| `is_active` | BOOLEAN | NOT NULL, DEFAULT TRUE | Produit actif |
-| `is_featured` | BOOLEAN | NOT NULL, DEFAULT FALSE | Produit mis en avant |
-| `created_by` | INTEGER | NOT NULL, FOREIGN KEY → users(id) | Utilisateur qui a créé le produit |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Date de création |
-| `updated_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Date de modification |
+| `category_id` | INTEGER | NOT NULL, FOREIGN KEY → categories(id) | Catégorie du produit |
+| `status` | ENUM | NOT NULL | Statut du produit (ProductStatus enum) |
+| `created_at` | TIMESTAMP | NULL | Date de création |
+| `updated_at` | TIMESTAMP | NULL | Date de modification |
 
 **Index :**
 - INDEX `idx_products_category_id` sur `category_id`
-- INDEX `idx_products_sku` sur `sku`
-- INDEX `idx_products_barcode` sur `barcode`
-- INDEX `idx_products_is_active` sur `is_active`
-- INDEX `idx_products_is_featured` sur `is_featured`
-- INDEX `idx_products_price` sur `price`
-- INDEX `idx_products_stock_quantity` sur `stock_quantity`
+- INDEX `idx_products_status` sur `status`
 
 ---
 

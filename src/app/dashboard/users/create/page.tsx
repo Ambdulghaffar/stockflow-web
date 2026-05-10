@@ -1,12 +1,12 @@
 import SidebarBreadcrumb from '@/components/dashboard/sidebar-breadcrumb'
-import CreateUser from '@/features/users/components/create-user'
+import UserForm from '@/features/users/components/user-form'
 import React from 'react'
 
-export default async function page() {
+export default async function CreateUserpage() {
   return (
     <div>
       <SidebarBreadcrumb />
-      <CreateUser/>
+      <UserForm mode="create" />
     </div>
   )
 }

@@ -1,7 +1,5 @@
 export const USERS_ENDPOINTS = {
-  base: "/user",
-  dto: "/users",
+  base: "/users",
   stats:"/users/stats",
   byId: (id: number) => `/users/${id}`,
-  register: "/users",
 } as const;
