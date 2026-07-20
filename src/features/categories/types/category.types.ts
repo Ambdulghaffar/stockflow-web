@@ -18,12 +18,12 @@ export interface CategoryResDto {
 }
 
 
-export interface CreateCategoryDto {
+export interface CategoryReqDto {
   name: string;
   description: string;
   imageUrl?: string;
 }
 
-export interface UpdateCategoryDto extends Partial<CreateCategoryDto> {
+export interface UpdateCategoryDto extends Partial<CategoryReqDto> {
   id: number;
 }

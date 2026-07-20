@@ -207,7 +207,7 @@ export default function ListCategories({
                 <TableRow key={category.id}>
                   <TableCell className="font-medium">{category.name}</TableCell>
                   <TableCell title={category.description}>
-                    {truncateText(category.description, 50)}
+                    {truncateText(category.description, 40)}
                   </TableCell>
                   <TableCell className="text-center text-pink-600">
                     {category.productCount}

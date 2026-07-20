@@ -4,8 +4,12 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
-  Breadcrumb, BreadcrumbItem, BreadcrumbLink,
-  BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { BREADCRUMB_MAP } from "@/constants/breadcrumb-map";
 import React from "react";
@@ -31,23 +35,29 @@ export default function DynamicBreadcrumb({ values }: DynamicBreadcrumbProps) {
 
   const segments = pathname.split("/").filter(Boolean);
 
+  // Segments qui ne correspondent à aucune page navigable en eux-mêmes
+  // (ex: /dashboard/categories/update n'existe pas, seul /update/[id] existe)
+  const NON_NAVIGABLE_SEGMENTS = new Set(["update", "edit", "create", "new"]);
+
   const breadcrumbs = segments
-    .map((segment, index) => {
-      const href  = "/" + segments.slice(0, index + 1).join("/");
-      const label = getLabel(segment, values);
-      const isLast = index === segments.length - 1;
-      return { href, label, isLast };
-    })
-    // Filtre les segments sans label (IDs sans valeur custom)
-    .filter(({ label }) => label !== "");
+    .map((segment, index) => ({
+      href: "/" + segments.slice(0, index + 1).join("/"),
+      label: getLabel(segment, values),
+      isNavigable: !NON_NAVIGABLE_SEGMENTS.has(segment.toLowerCase()),
+    }))
+    .filter(({ label }) => label !== "")
+    .map((item, index, filteredArray) => ({
+      ...item,
+      isLast: index === filteredArray.length - 1,
+    }));
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {breadcrumbs.map(({ href, label, isLast }, index) => (
+        {breadcrumbs.map(({ href, label, isLast, isNavigable }, index) => (
           <React.Fragment key={href}>
             <BreadcrumbItem className={index === 0 ? "hidden md:block" : ""}>
-              {isLast ? (
+              {isLast || !isNavigable ? (
                 <BreadcrumbPage>{label}</BreadcrumbPage>
               ) : (
                 <BreadcrumbLink asChild>
