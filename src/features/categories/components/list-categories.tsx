@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { PlusCircle, Pen, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,18 +24,9 @@ import { ROUTES } from "@/constants/route";
 import { truncateText } from "@/utils/truncate-text";
 import { formatDate } from "@/utils/format-date";
 import { PageResponse } from "@/types/pagination.types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDebounce } from "@/hooks/use-debounce";
+import { usePaginatedList } from "@/hooks/use-paginated-list";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import DataTablePagination from "@/components/dashboard/data-table-pagination";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { toast } from "react-toastify";
 import { deleteCategoryAction } from "../actions/category.actions";
@@ -51,79 +42,22 @@ export default function ListCategories({
   currentPage,
   currentSearch,
 }: ListCategoriesProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
   const [categories, setCategories] =
     useState<PageResponse<CategoryResDto>>(initialData);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [searchValue, setSearchValue] = useState(currentSearch);
-  // Attend 500ms après la dernière frappe avant de mettre à jour l'URL
-  const debouncedSearch = useDebounce(searchValue, 500);
+
+  const { searchValue, setSearchValue, buildPageUrl, getPageNumbers } =
+    usePaginatedList({
+      currentSearch,
+      currentPage,
+      totalPages: categories.totalPages,
+    });
 
   // Sync le state quand initialData change (navigation pagination/filtre)
   useEffect(() => {
     setCategories(initialData);
   }, [initialData]);
-
-  // Déclenche la navigation quand debouncedSearch change
-  const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    // Ignore le premier rendu — évite un push inutile au montage
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", "0");
-
-    if (debouncedSearch) {
-      params.set("search", debouncedSearch);
-    } else {
-      params.delete("search");
-    }
-
-    router.push(`${pathname}?${params.toString()}`);
-  }, [debouncedSearch, pathname, router, searchParams]);
-
-  // Construit l'URL pour une page donnée
-  const buildPageUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", String(page));
-    return `${pathname}?${params.toString()}`;
-  };
-
-  const getPageNumbers = () => {
-    const total = categories.totalPages;
-    const current = currentPage;
-    const pages: (number | "ellipsis")[] = [];
-
-    if (total <= 5) {
-      // Moins de 5 pages → on affiche tout
-      return Array.from({ length: total }, (_, i) => i);
-    }
-
-    // Toujours afficher la première page
-    pages.push(0);
-
-    if (current > 2) pages.push("ellipsis");
-
-    // Pages autour de la page courante
-    const start = Math.max(1, current - 1);
-    const end = Math.min(total - 2, current + 1);
-    for (let i = start; i <= end; i++) pages.push(i);
-
-    if (current < total - 3) pages.push("ellipsis");
-
-    // Toujours afficher la dernière page
-    pages.push(total - 1);
-
-    return pages;
-  };
 
   const handleDeleteCategory = (categoryId: number) => {
     setDeletingId(categoryId);
@@ -255,59 +189,17 @@ export default function ListCategories({
         </Table>
 
         {/* Pagination */}
-        {categories.totalPages > 1 && (
-          <div className="flex items-center justify-between mt-6">
-            <p className="text-sm text-muted-foreground">
-              {categories.totalElements} catégorie
-              {categories.totalElements > 1 ? "s" : ""} au total
-            </p>
-            <Pagination>
-              <PaginationContent>
-                {/* Précédent */}
-                <PaginationItem>
-                  <PaginationPrevious
-                    href={
-                      categories.first ? "#" : buildPageUrl(currentPage - 1)
-                    }
-                    aria-disabled={categories.first}
-                    className={
-                      categories.first ? "pointer-events-none opacity-50" : ""
-                    }
-                  />
-                </PaginationItem>
-
-                {/* Numéros de pages */}
-                {getPageNumbers().map((item, index) =>
-                  item === "ellipsis" ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={item}>
-                      <PaginationLink
-                        href={buildPageUrl(item)}
-                        isActive={item === currentPage}
-                      >
-                        {item + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                {/* Suivant */}
-                <PaginationItem>
-                  <PaginationNext
-                    href={categories.last ? "#" : buildPageUrl(currentPage + 1)}
-                    aria-disabled={categories.last}
-                    className={
-                      categories.last ? "pointer-events-none opacity-50" : ""
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        )}
+        <DataTablePagination
+          totalPages={categories.totalPages}
+          totalElements={categories.totalElements}
+          currentPage={currentPage}
+          first={categories.first}
+          last={categories.last}
+          buildPageUrl={buildPageUrl}
+          getPageNumbers={getPageNumbers}
+          itemLabelSingular="catégorie"
+          itemLabelPlural="catégories"
+        />
       </CardContent>
     </Card>
   );

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { PlusCircle, Pen, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,18 +24,9 @@ import { ROUTES } from "@/constants/route";
 import { truncateText } from "@/utils/truncate-text";
 import { formatDate } from "@/utils/format-date";
 import { PageResponse } from "@/types/pagination.types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDebounce } from "@/hooks/use-debounce";
+import { usePaginatedList } from "@/hooks/use-paginated-list";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import DataTablePagination from "@/components/dashboard/data-table-pagination";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { toast } from "react-toastify";
 import { deleteProductAction } from "../actions/product.actions";
@@ -79,79 +70,22 @@ export default function ListProducts({
   currentPage,
   currentSearch,
 }: ListProductsProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
   const [products, setProducts] =
     useState<PageResponse<ProductResDto>>(initialData);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [searchValue, setSearchValue] = useState(currentSearch);
-  // Attend 500ms après la dernière frappe avant de mettre à jour l'URL
-  const debouncedSearch = useDebounce(searchValue, 500);
+
+  const { searchValue, setSearchValue, buildPageUrl, getPageNumbers } =
+    usePaginatedList({
+      currentSearch,
+      currentPage,
+      totalPages: products.totalPages,
+    });
 
   // Sync le state quand initialData change (navigation pagination/filtre)
   useEffect(() => {
     setProducts(initialData);
   }, [initialData]);
-
-  // Déclenche la navigation quand debouncedSearch change
-  const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    // Ignore le premier rendu — évite un push inutile au montage
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", "0");
-
-    if (debouncedSearch) {
-      params.set("search", debouncedSearch);
-    } else {
-      params.delete("search");
-    }
-
-    router.push(`${pathname}?${params.toString()}`);
-  }, [debouncedSearch, pathname, router, searchParams]);
-
-  // Construit l'URL pour une page donnée
-  const buildPageUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", String(page));
-    return `${pathname}?${params.toString()}`;
-  };
-
-  const getPageNumbers = () => {
-    const total = products.totalPages;
-    const current = currentPage;
-    const pages: (number | "ellipsis")[] = [];
-
-    if (total <= 5) {
-      // Moins de 5 pages → on affiche tout
-      return Array.from({ length: total }, (_, i) => i);
-    }
-
-    // Toujours afficher la première page
-    pages.push(0);
-
-    if (current > 2) pages.push("ellipsis");
-
-    // Pages autour de la page courante
-    const start = Math.max(1, current - 1);
-    const end = Math.min(total - 2, current + 1);
-    for (let i = start; i <= end; i++) pages.push(i);
-
-    if (current < total - 3) pages.push("ellipsis");
-
-    // Toujours afficher la dernière page
-    pages.push(total - 1);
-
-    return pages;
-  };
 
   const handleDeleteProduct = (productId: number) => {
     setDeletingId(productId);
@@ -281,57 +215,17 @@ export default function ListProducts({
         </Table>
 
         {/* Pagination */}
-        {products.totalPages > 1 && (
-          <div className="flex items-center justify-between mt-6">
-            <p className="text-sm text-muted-foreground">
-              {products.totalElements} produit
-              {products.totalElements > 1 ? "s" : ""} au total
-            </p>
-            <Pagination>
-              <PaginationContent>
-                {/* Précédent */}
-                <PaginationItem>
-                  <PaginationPrevious
-                    href={products.first ? "#" : buildPageUrl(currentPage - 1)}
-                    aria-disabled={products.first}
-                    className={
-                      products.first ? "pointer-events-none opacity-50" : ""
-                    }
-                  />
-                </PaginationItem>
-
-                {/* Numéros de pages */}
-                {getPageNumbers().map((item, index) =>
-                  item === "ellipsis" ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={item}>
-                      <PaginationLink
-                        href={buildPageUrl(item)}
-                        isActive={item === currentPage}
-                      >
-                        {item + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                {/* Suivant */}
-                <PaginationItem>
-                  <PaginationNext
-                    href={products.last ? "#" : buildPageUrl(currentPage + 1)}
-                    aria-disabled={products.last}
-                    className={
-                      products.last ? "pointer-events-none opacity-50" : ""
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        )}
+        <DataTablePagination
+          totalPages={products.totalPages}
+          totalElements={products.totalElements}
+          currentPage={currentPage}
+          first={products.first}
+          last={products.last}
+          buildPageUrl={buildPageUrl}
+          getPageNumbers={getPageNumbers}
+          itemLabelSingular="produit"
+          itemLabelPlural="produits"
+        />
       </CardContent>
     </Card>
   );
