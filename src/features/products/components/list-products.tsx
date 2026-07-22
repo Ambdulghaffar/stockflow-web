@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { CategoryResDto } from "../types/category.types";
+import { ProductResDto, ProductStatus } from "../types/product.types";
 import { ROUTES } from "@/constants/route";
 import { truncateText } from "@/utils/truncate-text";
 import { formatDate } from "@/utils/format-date";
@@ -29,21 +29,49 @@ import { Input } from "@/components/ui/input";
 import DataTablePagination from "@/components/dashboard/data-table-pagination";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { toast } from "react-toastify";
-import { deleteCategoryAction } from "../actions/category.actions";
+import { deleteProductAction } from "../actions/product.actions";
 
-interface ListCategoriesProps {
-  initialData: PageResponse<CategoryResDto>;
+interface ListProductsProps {
+  initialData: PageResponse<ProductResDto>;
   currentPage: number;
   currentSearch: string;
 }
 
-export default function ListCategories({
+const STATUS_LABELS: Record<ProductStatus, string> = {
+  ACTIVE: "Actif",
+  INACTIVE: "Inactif",
+  OUT_OF_STOCK: "Rupture de stock",
+};
+
+const getStatusBadgeClasses = (status: ProductStatus): string => {
+  switch (status) {
+    case "ACTIVE":
+      return "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300";
+    case "OUT_OF_STOCK":
+      return "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300";
+    case "INACTIVE":
+    default:
+      return "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+  }
+};
+
+const getStockBadgeClasses = (stock: number): string => {
+  if (stock === 0) {
+    return "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300";
+  }
+  if (stock <= 10) {
+    return "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300";
+  }
+  return "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300";
+};
+
+export default function ListProducts({
   initialData,
   currentPage,
   currentSearch,
-}: ListCategoriesProps) {
-  const [categories, setCategories] =
-    useState<PageResponse<CategoryResDto>>(initialData);
+}: ListProductsProps) {
+  const [products, setProducts] =
+    useState<PageResponse<ProductResDto>>(initialData);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -51,24 +79,24 @@ export default function ListCategories({
     usePaginatedList({
       currentSearch,
       currentPage,
-      totalPages: categories.totalPages,
+      totalPages: products.totalPages,
     });
 
   // Sync le state quand initialData change (navigation pagination/filtre)
   useEffect(() => {
-    setCategories(initialData);
+    setProducts(initialData);
   }, [initialData]);
 
-  const handleDeleteCategory = (categoryId: number) => {
-    setDeletingId(categoryId);
+  const handleDeleteProduct = (productId: number) => {
+    setDeletingId(productId);
     startTransition(async () => {
       try {
-        const result = await deleteCategoryAction(categoryId);
+        const result = await deleteProductAction(productId);
         if (result.success) {
-          toast.success("Catégorie supprimée avec succès !");
-          setCategories((prev) => ({
+          toast.success("Produit supprimé avec succès !");
+          setProducts((prev) => ({
             ...prev,
-            content: prev.content.filter((u) => u.id !== categoryId),
+            content: prev.content.filter((p) => p.id !== productId),
             totalElements: prev.totalElements - 1,
           }));
         } else {
@@ -89,8 +117,8 @@ export default function ListCategories({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Catégories</CardTitle>
-        <CardDescription>Gérez les catégories de produits.</CardDescription>
+        <CardTitle>Produits</CardTitle>
+        <CardDescription>Gérez le catalogue de produits.</CardDescription>
       </CardHeader>
       <CardContent>
         {/* Filtres + bouton ajout */}
@@ -100,7 +128,7 @@ export default function ListCategories({
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Rechercher par nom de catégorie..."
+                placeholder="Rechercher par nom de produit..."
                 className="pl-8 w-full"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
@@ -112,10 +140,10 @@ export default function ListCategories({
             size="sm"
             className="gap-1 bg-pink-600 hover:bg-pink-700"
           >
-            <Link href={ROUTES.DASHBOARD_CREATE_CATEGORIES}>
+            <Link href={ROUTES.DASHBOARD_CREATE_PRODUCTS}>
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Ajouter une catégorie
+                Ajouter un produit
               </span>
             </Link>
           </Button>
@@ -126,9 +154,10 @@ export default function ListCategories({
           <TableHeader>
             <TableRow>
               <TableHead>Nom</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Nombre de produits</TableHead>
-              <TableHead>Image</TableHead>
+              <TableHead>Catégorie</TableHead>
+              <TableHead>Prix</TableHead>
+              <TableHead>Stock</TableHead>
+              <TableHead>Statut</TableHead>
               <TableHead className="hidden md:table-cell">
                 Date de création
               </TableHead>
@@ -136,40 +165,37 @@ export default function ListCategories({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {categories.content.length > 0 ? (
-              categories.content.map((category) => (
-                <TableRow key={category.id}>
-                  <TableCell className="font-medium">{category.name}</TableCell>
-                  <TableCell title={category.description}>
-                    {truncateText(category.description, 40)}
+            {products.content.length > 0 ? (
+              products.content.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell className="font-medium">
+                    {truncateText(product.name, 40)}
                   </TableCell>
-                  <TableCell className="text-center text-pink-600">
-                    {category.productCount}
+                  <TableCell>{product.categoryName}</TableCell>
+                  <TableCell>{product.price.toFixed(2)} €</TableCell>
+                  <TableCell>
+                    <Badge className={getStockBadgeClasses(product.stock)}>
+                      {product.stock}
+                    </Badge>
                   </TableCell>
                   <TableCell>
-                    {category.imageUrl ? (
-                      <Badge variant="secondary" className="text-xs">
-                        Image présente
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="text-xs">
-                        Pas d&apos;image
-                      </Badge>
-                    )}
+                    <Badge className={getStatusBadgeClasses(product.status)}>
+                      {STATUS_LABELS[product.status]}
+                    </Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    {formatDate(category.createdAt)}
+                    {formatDate(product.createdAt)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Link
-                        href={`${ROUTES.DASHBOARD_UPDATE_CATEGORIES}/${category.id}`}
+                        href={`${ROUTES.DASHBOARD_UPDATE_PRODUCTS}/${product.id}`}
                       >
                         <Pen color="blue" size={16} />
                       </Link>
                       <ConfirmationDialog
-                        onConfirm={() => handleDeleteCategory(category.id)}
-                        disabled={isPending && deletingId === category.id}
+                        onConfirm={() => handleDeleteProduct(product.id)}
+                        disabled={isPending && deletingId === product.id}
                       />
                     </div>
                   </TableCell>
@@ -178,10 +204,10 @@ export default function ListCategories({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={7}
                   className="h-24 text-center text-muted-foreground"
                 >
-                  Aucune catégorie trouvée.
+                  Aucun produit trouvé.
                 </TableCell>
               </TableRow>
             )}
@@ -190,15 +216,15 @@ export default function ListCategories({
 
         {/* Pagination */}
         <DataTablePagination
-          totalPages={categories.totalPages}
-          totalElements={categories.totalElements}
+          totalPages={products.totalPages}
+          totalElements={products.totalElements}
           currentPage={currentPage}
-          first={categories.first}
-          last={categories.last}
+          first={products.first}
+          last={products.last}
           buildPageUrl={buildPageUrl}
           getPageNumbers={getPageNumbers}
-          itemLabelSingular="catégorie"
-          itemLabelPlural="catégories"
+          itemLabelSingular="produit"
+          itemLabelPlural="produits"
         />
       </CardContent>
     </Card>

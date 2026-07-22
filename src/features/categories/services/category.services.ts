@@ -1,5 +1,5 @@
 import { PageResponse } from "@/types/pagination.types";
-import { CategoryDto, CategoryResDto } from "../types/category.types";
+import { CategoryDto, CategoryReqDto, CategoryResDto } from "../types/category.types";
 import apiClient from "@/lib/axios/api-client";
 import { CATEGORIES_ENDPOINTS } from "../constants/categories.endpoints";
 import { getAuthHeaders } from "@/lib/auth/auth-helpers";
@@ -49,6 +49,35 @@ export const getCategoryById = async (
       return null;
     }
     return handleApiError(error, `getCategoryById (id: ${id})`);
+  }
+};
+
+export const createCategory = async (request: CategoryReqDto) : Promise<CategoryResDto> => {
+  try {
+    const { data } = await apiClient.post<CategoryResDto>(
+      CATEGORIES_ENDPOINTS.base,
+      request,
+      { headers: await getAuthHeaders() },
+    );
+    return data;
+  } catch (error) {
+    return handleApiError(error, "createCategory");
+  }
+};
+
+export const updateCategory = async (
+  id: number,
+  request: CategoryReqDto,
+): Promise<CategoryResDto> => {
+  try {
+    const { data } = await apiClient.put<CategoryResDto>(
+      `${CATEGORIES_ENDPOINTS.byId(id)}`,
+      request,
+      { headers: await getAuthHeaders() },
+    );
+    return data;
+  } catch (error) {
+    return handleApiError(error, "updateCategory");
   }
 };
 

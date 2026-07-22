@@ -10,5 +10,7 @@ export const ROUTES={
     DASHBOARD_CATEGORIES:"/dashboard/categories",
     DASHBOARD_CREATE_CATEGORIES:"/dashboard/categories/create",
     DASHBOARD_UPDATE_CATEGORIES:"/dashboard/categories/update",
-    DASHBOARD_PRODUCTS:"/dashboard/products"
+    DASHBOARD_PRODUCTS:"/dashboard/products",
+    DASHBOARD_CREATE_PRODUCTS:"/dashboard/products/create",
+    DASHBOARD_UPDATE_PRODUCTS:"/dashboard/products/update"
 } as const

@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PlusCircle, Search, ListFilter, Pen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,15 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { UserDto } from "@/features/users/types/user.types";
@@ -47,7 +37,8 @@ import ConfirmationDialog from "@/components/confirmation-dialog";
 import { deleteUserAction } from "../actions/user.actions";
 import { toast } from "react-toastify";
 import { ApiError } from "@/types/api.types";
-import { useDebounce } from "@/hooks/use-debounce";
+import { usePaginatedList } from "@/hooks/use-paginated-list";
+import DataTablePagination from "@/components/dashboard/data-table-pagination";
 
 interface ListUsersProps {
   initialData: PageResponse<UserDto>;
@@ -56,49 +47,34 @@ interface ListUsersProps {
   currentSearch: string;
 }
 
-export default function UserList({
+export default function ListUser({
   initialData,
   currentPage,
   currentRole,
   currentSearch,
 }: ListUsersProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
   const [data, setData] = useState<PageResponse<UserDto>>(initialData);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [searchValue, setSearchValue] = useState(currentSearch);
-  // Attend 500ms après la dernière frappe avant de mettre à jour l'URL
-  const debouncedSearch = useDebounce(searchValue, 500);
+
+  const {
+    pathname,
+    searchParams,
+    router,
+    searchValue,
+    setSearchValue,
+    buildPageUrl,
+    getPageNumbers,
+  } = usePaginatedList({
+    currentSearch,
+    currentPage,
+    totalPages: data.totalPages,
+  });
 
   // Sync le state quand initialData change (navigation pagination/filtre)
   useEffect(() => {
     setData(initialData);
   }, [initialData]);
-
-  // Déclenche la navigation quand debouncedSearch change
-  const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    // Ignore le premier rendu — évite un push inutile au montage
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", "0");
-
-    if (debouncedSearch) {
-      params.set("search", debouncedSearch);
-    } else {
-      params.delete("search");
-    }
-
-    router.push(`${pathname}?${params.toString()}`);
-  }, [debouncedSearch, pathname, router, searchParams]);
 
   const getBadgeClasses = (role: string) => {
     switch (role.toUpperCase()) {
@@ -123,42 +99,6 @@ export default function UserList({
     }
 
     router.push(`${pathname}?${params.toString()}`);
-  };
-
-  // Construit l'URL pour une page donnée
-  const buildPageUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", String(page));
-    return `${pathname}?${params.toString()}`;
-  };
-
-  // Génère les numéros de pages à afficher avec ellipsis
-  const getPageNumbers = () => {
-    const total = data.totalPages;
-    const current = currentPage;
-    const pages: (number | "ellipsis")[] = [];
-
-    if (total <= 5) {
-      // Moins de 5 pages → on affiche tout
-      return Array.from({ length: total }, (_, i) => i);
-    }
-
-    // Toujours afficher la première page
-    pages.push(0);
-
-    if (current > 2) pages.push("ellipsis");
-
-    // Pages autour de la page courante
-    const start = Math.max(1, current - 1);
-    const end = Math.min(total - 2, current + 1);
-    for (let i = start; i <= end; i++) pages.push(i);
-
-    if (current < total - 3) pages.push("ellipsis");
-
-    // Toujours afficher la dernière page
-    pages.push(total - 1);
-
-    return pages;
   };
 
   const handleDeleteUser = (userId: number) => {
@@ -302,57 +242,17 @@ export default function UserList({
         </Table>
 
         {/* Pagination */}
-        {data.totalPages > 1 && (
-          <div className="flex items-center justify-between mt-6">
-            <p className="text-sm text-muted-foreground">
-              {data.totalElements} utilisateur
-              {data.totalElements > 1 ? "s" : ""} au total
-            </p>
-            <Pagination>
-              <PaginationContent>
-                {/* Précédent */}
-                <PaginationItem>
-                  <PaginationPrevious
-                    href={data.first ? "#" : buildPageUrl(currentPage - 1)}
-                    aria-disabled={data.first}
-                    className={
-                      data.first ? "pointer-events-none opacity-50" : ""
-                    }
-                  />
-                </PaginationItem>
-
-                {/* Numéros de pages */}
-                {getPageNumbers().map((item, index) =>
-                  item === "ellipsis" ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={item}>
-                      <PaginationLink
-                        href={buildPageUrl(item)}
-                        isActive={item === currentPage}
-                      >
-                        {item + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                {/* Suivant */}
-                <PaginationItem>
-                  <PaginationNext
-                    href={data.last ? "#" : buildPageUrl(currentPage + 1)}
-                    aria-disabled={data.last}
-                    className={
-                      data.last ? "pointer-events-none opacity-50" : ""
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        )}
+        <DataTablePagination
+          totalPages={data.totalPages}
+          totalElements={data.totalElements}
+          currentPage={currentPage}
+          first={data.first}
+          last={data.last}
+          buildPageUrl={buildPageUrl}
+          getPageNumbers={getPageNumbers}
+          itemLabelSingular="utilisateur"
+          itemLabelPlural="utilisateurs"
+        />
       </CardContent>
     </Card>
   );
