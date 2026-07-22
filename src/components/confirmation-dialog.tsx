@@ -24,20 +24,26 @@ export default function ConfirmationDialog({
 }: ConfirmationDialogProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="cursor-pointer">
-        <Trash color="red" size={16} />
+      <AlertDialogTrigger>
+        <button className="cursor-pointer" aria-label="Supprimer">
+          <Trash color="red" size={16} />
+        </button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent size="sm">
         <AlertDialogHeader>
           <AlertDialogTitle>Êtes-vous absolument sûr&nbsp;?</AlertDialogTitle>
           <AlertDialogDescription>
-            Cette action est irréversible. Elle supprimera définitivement votre
-            compte et effacera vos données de nos serveurs.
+            Cette action est irréversible. L&apos;élément sera définitivement
+            supprimé.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="cursor-pointer">Annuler</AlertDialogCancel>
-          <AlertDialogAction className="cursor-pointer bg-pink-600 hover:bg-pink-700" onClick={onConfirm} disabled={disabled}>
+          <AlertDialogCancel variant="outline">Annuler</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
+            onClick={onConfirm}
+            disabled={disabled}
+          >
             Continuer
           </AlertDialogAction>
         </AlertDialogFooter>
