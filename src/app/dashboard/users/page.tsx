@@ -1,6 +1,6 @@
 import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
 import { StatCard } from "@/components/dashboard/stat-card";
-import UserList from "@/features/users/components/user-list";
+import ListUser from "@/features/users/components/list-user";
 import {
   getAllUsers,
   getUserStats,
@@ -94,7 +94,7 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
       </div>
 
       {/* Liste des utilisateurs */}
-      <UserList
+      <ListUser
         initialData={{ ...data, content: filteredContent }}
         currentPage={Number(page) || 0}
         currentRole={role || "all"}
