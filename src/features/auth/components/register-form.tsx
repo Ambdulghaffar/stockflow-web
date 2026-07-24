@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/constants/route";
 import { signIn } from "next-auth/react";
 import { registerUser } from "../services/auth.services";
+import { Loader2 } from "lucide-react";
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -188,9 +188,17 @@ export function RegisterForm() {
 
         <Button
           type="submit"
-          className="w-full py-6 text-lg  bg-pink-400 hover:bg-pink-500 cursor-pointer"
+          disabled={form.formState.isSubmitting}
+          className="w-full py-6 text-lg  bg-pink-400 hover:bg-pink-500 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          Créer un compte
+          {form.formState.isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Création de compte...
+            </>
+          ) : (
+            "Créer un compte"
+          )}
         </Button>
       </form>
     </Form>

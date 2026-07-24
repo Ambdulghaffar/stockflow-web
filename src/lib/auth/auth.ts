@@ -2,6 +2,7 @@ import environment from "@/config/environment.config";
 import { AuthResponse } from "@/features/auth/types/auth.types";
 import type { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
@@ -69,8 +70,67 @@ export const authOptions: NextAuthOptions = {
         } as any;
       },
     }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider !== "google") {
+        return true;
+      }
+
+      if (!user.email || !user.name) {
+        return "/login?error=GoogleAuthFailed";
+      }
+
+      try {
+        const apiBaseUrl = environment.api.rest.baseUrl;
+        const response = await fetch(`${apiBaseUrl}/auth/google`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user.email,
+            username: user.name,
+          }),
+        });
+
+        const data = (await response.json()) as Partial<AuthResponse>;
+
+        if (!response.ok) {
+          if (response.status === 409) {
+            return "/login?error=EmailExists";
+          }
+          return "/login?error=GoogleAuthFailed";
+        }
+
+        if (
+          !data.accessToken ||
+          !data.refreshToken ||
+          !data.email ||
+          !data.role ||
+          !data.expiresIn
+        ) {
+          return "/login?error=GoogleAuthFailed";
+        }
+
+        user.id = data.email;
+        user.name = data.username ?? user.name;
+        user.roles = [data.role];
+        user.accessToken = data.accessToken;
+        user.refreshToken = data.refreshToken;
+        user.expiresIn = data.expiresIn;
+
+        return true;
+      } catch (error) {
+        console.error("Erreur lors de l'authentification Google", error);
+        return "/login?error=GoogleAuthFailed";
+      }
+    },
+
     async jwt({ token, user }) {
 
       // ÉTAPE A : Login Initial

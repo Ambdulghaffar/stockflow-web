@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
-import { useState } from "react"; // Importer useState
-import { Eye, EyeOff } from "lucide-react"; // Importer les icônes
+import { useEffect, useState } from "react"; // Importer useState
+import { Eye, EyeOff, Loader2 } from "lucide-react"; // Importer les icônes
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,11 +17,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTES } from "@/constants/route";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import Image from "next/image";
 
 const FormSchema = z.object({
   email: z.string().min(2, {
@@ -34,6 +33,8 @@ const FormSchema = z.object({
 
 export function LoginForm() {
   const route = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   // 1. Ajouter l'état pour la visibilité du mot de passe
   const [showPassword, setShowPassword] = useState(false);
 
@@ -44,6 +45,27 @@ export function LoginForm() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (!error) return;
+
+    if (error === "EmailExists") {
+      toast.error(
+        "Cet email est déjà utilisé avec un compte existant. Connectez-vous avec votre mot de passe.",
+      );
+    } else if (error === "GoogleAuthFailed") {
+      toast.error("La connexion avec Google a échoué. Veuillez réessayer.");
+    } else if (error === "CredentialsSignin") {
+      toast.error("Email ou mot de passe invalide.");
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("error");
+    const query = params.toString();
+    route.replace(query ? `${pathname}?${query}` : pathname);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, pathname]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
@@ -69,15 +91,29 @@ export function LoginForm() {
   return (
     <div className="space-y-6">
       <Button
-        className="w-full py-6 text-lg font-bold border-gray-600 bg-gray-400 hover:bg-gray-500"
+        type="button"
+        variant="outline"
+        className="w-full py-6 text-lg gap-2 cursor-pointer bg-gray-200 hover:bg-gray-300 border border-gray-300 "
+        onClick={() => signIn("google", { callbackUrl: ROUTES.DASHBOARD })}
       >
-        <Image
-          src="/images/google-icon.jpg"
-          alt="Google"
-          width={30}
-          height={30}
-          className="mr-2 rounded-full"
-        />
+        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
+          <path
+            fill="#4285F4"
+            d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.43 3.58v2.98h3.93c2.3-2.12 3.52-5.23 3.52-8.8z"
+          />
+          <path
+            fill="#34A853"
+            d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.93-2.98c-1.09.73-2.5 1.16-4 1.16-3.08 0-5.68-2.08-6.61-4.87H1.34v3.07C3.31 21.3 7.34 24 12 24z"
+          />
+          <path
+            fill="#FBBC05"
+            d="M5.39 14.4c-.24-.73-.38-1.5-.38-2.4s.14-1.67.38-2.4V6.53H1.34C.49 8.24 0 10.06 0 12s.49 3.76 1.34 5.47z"
+          />
+          <path
+            fill="#EA4335"
+            d="M12 4.77c1.77 0 3.35.61 4.6 1.8l3.44-3.44C17.94 1.19 15.24 0 12 0 7.34 0 3.31 2.7 1.34 6.53l4.05 3.07C6.32 6.85 8.92 4.77 12 4.77z"
+          />
+        </svg>
         Se connecter avec Google
       </Button>
 
@@ -154,9 +190,17 @@ export function LoginForm() {
           />
           <Button
             type="submit"
-            className="w-full py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white"
+            disabled={form.formState.isSubmitting}
+            className="w-full py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Se connecter
+            {form.formState.isSubmitting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Connexion...
+              </>
+            ) : (
+              "Se connecter"
+            )}
           </Button>
         </form>
       </Form>
