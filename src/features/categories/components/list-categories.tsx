@@ -30,6 +30,7 @@ import DataTablePagination from "@/components/dashboard/data-table-pagination";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { toast } from "react-toastify";
 import { deleteCategoryAction } from "../actions/category.actions";
+import { useSession } from "next-auth/react";
 
 interface ListCategoriesProps {
   initialData: PageResponse<CategoryResDto>;
@@ -46,6 +47,8 @@ export default function ListCategories({
     useState<PageResponse<CategoryResDto>>(initialData);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { data: session } = useSession();
+  const role = session?.user?.roles?.[0];
 
   const { searchValue, setSearchValue, buildPageUrl, getPageNumbers } =
     usePaginatedList({
@@ -161,16 +164,18 @@ export default function ListCategories({
                     {formatDate(category.createdAt)}
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center gap-3">
                       <Link
                         href={`${ROUTES.DASHBOARD_UPDATE_CATEGORIES}/${category.id}`}
                       >
                         <Pen color="blue" size={16} />
                       </Link>
-                      <ConfirmationDialog
-                        onConfirm={() => handleDeleteCategory(category.id)}
-                        disabled={isPending && deletingId === category.id}
-                      />
+                      {role === "ADMIN" && (
+                        <ConfirmationDialog
+                          onConfirm={() => handleDeleteCategory(category.id)}
+                          disabled={isPending && deletingId === category.id}
+                        />
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

@@ -34,9 +34,16 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  initialRole?: Role;
+}
+
+export function AppSidebar({ initialRole, ...props }: AppSidebarProps) {
   const { data: session } = useSession();
-  const role = session?.user?.roles?.[0] as Role | undefined;
+  const sessionRole = session?.user?.roles?.[0] as Role | undefined;
+  // initialRole vient du Server Component (déjà connu au premier rendu) :
+  // il évite le flash de nav non filtrée pendant l'hydratation de useSession().
+  const role = initialRole ?? sessionRole;
 
   const navMain = NAV_ITEMS.filter((item) => !role || item.roles.includes(role));
 

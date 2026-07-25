@@ -1,6 +1,9 @@
+import { getServerSession } from "next-auth";
+
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SalesChart } from "@/components/dashboard/sales-chart";
 import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import ClientDashboardOverview from "@/components/dashboard/client-dashboard-overview";
 import {
   Card,
   CardContent,
@@ -17,8 +20,25 @@ import {
   UserPlus,
   Truck,
 } from "lucide-react";
+import { authOptions } from "@/lib/auth/auth";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await getServerSession(authOptions);
+  const role = session?.user.roles?.[0];
+
+  if (role === "CLIENT") {
+    return (
+      <>
+        <SidebarBreadcrumb />
+        <div className="flex-1 space-y-4 p-8 pt-6">
+          <ClientDashboardOverview
+            username={session?.user.name ?? "vous"}
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <SidebarBreadcrumb />

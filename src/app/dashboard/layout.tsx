@@ -7,6 +7,7 @@ import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { authOptions } from "@/lib/auth/auth";
 import SessionGuard from "@/features/auth/components/session-guard";
+import { Role } from "@/constants/nav-items";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,10 +25,12 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  const role = session.user.roles?.[0] as Role | undefined;
+
   return (
     <SessionGuard>
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar initialRole={role} />
         <SidebarInset>{children}</SidebarInset>
       </SidebarProvider>
     </SessionGuard>

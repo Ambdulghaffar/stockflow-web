@@ -30,6 +30,7 @@ import DataTablePagination from "@/components/dashboard/data-table-pagination";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { toast } from "react-toastify";
 import { deleteProductAction } from "../actions/product.actions";
+import { useSession } from "next-auth/react";
 
 interface ListProductsProps {
   initialData: PageResponse<ProductResDto>;
@@ -74,6 +75,8 @@ export default function ListProducts({
     useState<PageResponse<ProductResDto>>(initialData);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { data: session } = useSession();
+  const role = session?.user?.roles?.[0];
 
   const { searchValue, setSearchValue, buildPageUrl, getPageNumbers } =
     usePaginatedList({
@@ -187,16 +190,18 @@ export default function ListProducts({
                     {formatDate(product.createdAt)}
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center gap-3">
                       <Link
                         href={`${ROUTES.DASHBOARD_UPDATE_PRODUCTS}/${product.id}`}
                       >
                         <Pen color="blue" size={16} />
                       </Link>
-                      <ConfirmationDialog
-                        onConfirm={() => handleDeleteProduct(product.id)}
-                        disabled={isPending && deletingId === product.id}
-                      />
+                      {role === "ADMIN" && (
+                        <ConfirmationDialog
+                          onConfirm={() => handleDeleteProduct(product.id)}
+                          disabled={isPending && deletingId === product.id}
+                        />
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

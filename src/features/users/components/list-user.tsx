@@ -201,9 +201,23 @@ export default function ListUser({
                       {user.email}
                     </p>
                   </TableCell>
-                  <TableCell>{user.phone}</TableCell>
+                  <TableCell>
+                    {user.phone ? (
+                      user.phone
+                    ) : (
+                      <span className="text-muted-foreground italic text-sm">
+                        Non renseigné
+                      </span>
+                    )}
+                  </TableCell>
                   <TableCell title={user.address}>
-                    {truncateText(user.address)}
+                    {user.address ? (
+                      truncateText(user.address)
+                    ) : (
+                      <span className="text-muted-foreground italic text-sm">
+                        Non renseigné
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Badge className={getBadgeClasses(user.role)}>
