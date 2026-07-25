@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 
 import { NavMain } from "@/components/dashboard/nav-main";
-import { NavUser } from "@/components/dashboard/nav-user";
+import { UserMenu } from "@/components/dashboard/user-menu";
 import { TeamSwitcher } from "@/components/dashboard/team-switcher";
 import {
   Sidebar,
@@ -20,11 +20,6 @@ import { useSession } from "next-auth/react";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "Ambdulghaffar Ahamadi",
-    email: "ambdulghaffar@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "ElectroTech",
@@ -56,7 +51,7 @@ export function AppSidebar({ initialRole, ...props }: AppSidebarProps) {
         <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <UserMenu variant="sidebar" />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

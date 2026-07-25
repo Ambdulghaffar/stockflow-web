@@ -34,5 +34,7 @@ export const ROUTES={
     DASHBOARD_ACCOUNT_ADDRESSES:"/dashboard/account/addresses",
     DASHBOARD_ACCOUNT_WISHLIST:"/dashboard/account/wishlist",
     DASHBOARD_ACCOUNT_PROFILE:"/dashboard/account/profile",
+    DASHBOARD_PROFILE:"/dashboard/profile",
+    DASHBOARD_NOTIFICATIONS:"/dashboard/notifications",
     AUTH_REDIRECT:"/auth/redirect"
 } as const

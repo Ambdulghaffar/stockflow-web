@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
 import { ROUTES } from "@/constants/route";
-import UserProfile from "./dashboard/user-profile";
+import { UserMenu } from "./dashboard/user-menu";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function Header() {
           <ShoppingCart className="h-5 w-5 text-gray-600 cursor-pointer" />
 
           {session ? (
-            <UserProfile />
+            <UserMenu variant="compact" showDashboardLink={true} />
           ) : (
             <div className="hidden items-center space-x-2 md:flex">
               <Button
