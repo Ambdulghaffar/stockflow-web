@@ -155,7 +155,7 @@ export function LoginForm() {
                 <div className="flex items-center">
                   <FormLabel>Mot de passe</FormLabel>
                   <Link
-                    href="#"
+                    href={ROUTES.FORGOT_PASSWORD}
                     className="ml-auto inline-block text-sm text-gray-500 hover:text-gray-600 underline"
                   >
                     Mot de passe oublié?
@@ -191,7 +191,7 @@ export function LoginForm() {
           <Button
             type="submit"
             disabled={form.formState.isSubmitting}
-            className="w-full py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full py-6 text-lg bg-pink-500 hover:bg-pink-600 text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
           >
             {form.formState.isSubmitting ? (
               <>

@@ -11,19 +11,42 @@ import type {
 export const registerUser = async (
   userData: Partial<RegisterDto>,
 ): Promise<AuthResponse> => {
-/*   console.log("🚀 registerUser appelé avec:", userData);
-  console.log("🌐 URL:", AUTH_ENDPOINTS.register);
-  console.log("🔗 baseURL:", apiPublicClient.defaults.baseURL);
-  console.log("AUTH_ENDPOINTS:", AUTH_ENDPOINTS); */
   try {
     const { data } = await apiPublicClient.post<AuthResponse>(
       AUTH_ENDPOINTS.register,
       userData,
     );
-    //console.log("✅ registerUser succès:", data);
     return data;
   } catch (error) {
-    //console.log("❌ registerUser erreur brute:", error);
     return handleApiError(error, "registerUser");
+  }
+};
+
+export const forgotPassword = async (
+  email: string,
+): Promise<{ message: string }> => {
+  try {
+    const { data } = await apiPublicClient.post<{ message: string }>(
+      AUTH_ENDPOINTS.forgotPassword,
+      { email },
+    );
+    return data;
+  } catch (error) {
+    return handleApiError(error, "forgotPassword");
+  }
+};
+
+export const resetPassword = async (
+  token: string,
+  newPassword: string,
+): Promise<{ message: string }> => {
+  try {
+    const { data } = await apiPublicClient.post<{ message: string }>(
+      AUTH_ENDPOINTS.resetPassword,
+      { token, newPassword },
+    );
+    return data;
+  } catch (error) {
+    return handleApiError(error, "resetPassword");
   }
 };

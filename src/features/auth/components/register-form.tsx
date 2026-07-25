@@ -189,7 +189,7 @@ export function RegisterForm() {
         <Button
           type="submit"
           disabled={form.formState.isSubmitting}
-          className="w-full py-6 text-lg  bg-pink-400 hover:bg-pink-500 disabled:cursor-not-allowed disabled:opacity-70"
+          className="w-full py-6 text-lg  bg-pink-400 hover:bg-pink-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
         >
           {form.formState.isSubmitting ? (
             <>
