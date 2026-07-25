@@ -77,7 +77,7 @@ export function LoginForm() {
 
       if (result?.ok) {
         toast.success("Connexion réussie !");
-        route.push(ROUTES.DASHBOARD);
+        route.push(ROUTES.AUTH_REDIRECT);
         form.reset();
       } else {
         toast.error("Email ou mot de passe invalide.");
@@ -94,7 +94,7 @@ export function LoginForm() {
         type="button"
         variant="outline"
         className="w-full py-6 text-lg gap-2 cursor-pointer bg-gray-200 hover:bg-gray-300 border border-gray-300 "
-        onClick={() => signIn("google", { callbackUrl: ROUTES.DASHBOARD })}
+        onClick={() => signIn("google", { callbackUrl: ROUTES.AUTH_REDIRECT })}
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
           <path

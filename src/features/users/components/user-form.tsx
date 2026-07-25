@@ -33,6 +33,7 @@ import {
 import { ROUTES } from "@/constants/route";
 import { UserDto } from "@/features/users/types/user.types";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
 
 type UserFormProps =
   | { mode: "create" }
@@ -288,9 +289,19 @@ export default function UserForm(props: UserFormProps) {
                   </Button>
                   <Button
                     type="submit"
-                    className="px-8 py-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-medium cursor-pointer transition-all duration-200 shadow-lg hover:shadow-xl"
+                    disabled={form.formState.isSubmitting}
+                    className="px-8 py-2 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-medium cursor-pointer transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    {isEdit ? "Mettre à jour" : "Créer l'utilisateur"}
+                    {form.formState.isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {isEdit ? "Mise à jour..." : "Création..."}
+                      </>
+                    ) : isEdit ? (
+                      "Mettre à jour"
+                    ) : (
+                      "Créer l'utilisateur"
+                    )}
                   </Button>
                 </div>
               </form>

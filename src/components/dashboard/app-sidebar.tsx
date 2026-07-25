@@ -15,8 +15,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { NavMainAdmin } from "@/constants/nav-main-admin";
-
+import { NAV_ITEMS, Role } from "@/constants/nav-items";
+import { useSession } from "next-auth/react";
 
 // This is sample data.
 const data = {
@@ -32,17 +32,21 @@ const data = {
       plan: "Boutique en ligne",
     }
   ],
-  navMain: NavMainAdmin,
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = useSession();
+  const role = session?.user?.roles?.[0] as Role | undefined;
+
+  const navMain = NAV_ITEMS.filter((item) => !role || item.roles.includes(role));
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
