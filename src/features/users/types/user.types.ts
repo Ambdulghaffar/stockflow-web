@@ -5,6 +5,7 @@ export type UserDto = {
   email: string;
   phone: string;
   address: string;
+  imageUrl: string | null;
   role: "ADMIN" | "MANAGER" | "CLIENT";
   createdAt: string;
   updatedAt: string;
@@ -35,6 +36,18 @@ export type UserStats = {
   managers: number;
   clients: number;
 };
+
+export interface MeUpdateDto {
+  username: string;
+  phone?: string;
+  address?: string;
+  imageUrl?: string;
+}
+
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+}
 
 
 

@@ -1,10 +1,18 @@
-import { UserDto, UserCreateRequest, UserUpdateRequest, UserStats } from "../types/user.types";
+import {
+  UserDto,
+  UserCreateRequest,
+  UserUpdateRequest,
+  UserStats,
+  ChangePasswordDto,
+  MeUpdateDto,
+} from "../types/user.types";
 import apiClient from "@/lib/axios/api-client";
 import { handleApiError } from "@/lib/axios/handle-api-error";
 import { USERS_ENDPOINTS } from "../constants/users.endpoints";
 import { getAuthHeaders } from "@/lib/auth/auth-helpers";
 import { PageResponse } from "@/types/pagination.types";
 import axios from "axios";
+import { MessageResponseDto } from "@/types/api.types";
 
 export const getAllUsers = async (
   page = 0,
@@ -24,8 +32,8 @@ export const getAllUsers = async (
           size,
           sortBy,
           sortDir,
-          ...(role   && role   !== "all" && { role }),
-          ...(search && search !== ""    && { search }),
+          ...(role && role !== "all" && { role }),
+          ...(search && search !== "" && { search }),
         },
       },
     );
@@ -50,7 +58,9 @@ export const getUserById = async (id: number): Promise<UserDto | null> => {
 };
 
 // UserCreateRequest — avec password
-export const createUser = async (request: UserCreateRequest): Promise<UserDto> => {
+export const createUser = async (
+  request: UserCreateRequest,
+): Promise<UserDto> => {
   try {
     const { data } = await apiClient.post<UserDto>(
       USERS_ENDPOINTS.base,
@@ -64,7 +74,10 @@ export const createUser = async (request: UserCreateRequest): Promise<UserDto> =
 };
 
 // UserUpdateRequest — sans password, id séparé
-export const updateUser = async (id: number, request: UserUpdateRequest): Promise<UserDto> => {
+export const updateUser = async (
+  id: number,
+  request: UserUpdateRequest,
+): Promise<UserDto> => {
   try {
     const { data } = await apiClient.put<UserDto>(
       USERS_ENDPOINTS.byId(id),
@@ -89,12 +102,50 @@ export const deleteUser = async (id: number): Promise<void> => {
 
 export const getUserStats = async (): Promise<UserStats> => {
   try {
-    const { data } = await apiClient.get<UserStats>(
-      USERS_ENDPOINTS.stats,
+    const { data } = await apiClient.get<UserStats>(USERS_ENDPOINTS.stats, {
+      headers: await getAuthHeaders(),
+    });
+    return data;
+  } catch (error) {
+    return handleApiError(error, "getUserStats");
+  }
+};
+
+export const getCurrentUser = async (): Promise<UserDto> => {
+  try {
+    const { data } = await apiClient.get<UserDto>(USERS_ENDPOINTS.me, {
+      headers: await getAuthHeaders(),
+    });
+    return data;
+  } catch (error) {
+    return handleApiError(error, "getCurrentUser");
+  }
+};
+
+export const updateCurrentUser = async (
+  request: MeUpdateDto,
+): Promise<UserDto> => {
+  try {
+    const { data } = await apiClient.put<UserDto>(USERS_ENDPOINTS.me, request, {
+      headers: await getAuthHeaders(),
+    });
+    return data;
+  } catch (error) {
+    return handleApiError(error, "updateCurrentUser");
+  }
+};
+
+export const changePassword = async (
+  request: ChangePasswordDto,
+): Promise<MessageResponseDto> => {
+  try {
+    const { data } = await apiClient.put<MessageResponseDto>(
+      USERS_ENDPOINTS.mePassword,
+      request,
       { headers: await getAuthHeaders() },
     );
     return data;
   } catch (error) {
-    return handleApiError(error, "getUserStats");
+    return handleApiError(error, "changePassword");
   }
 };

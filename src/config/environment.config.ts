@@ -8,10 +8,6 @@ const environment = {
     rest: {
       // On définit une baseUrl racine pour simplifier Axios
       baseUrl: INV_MGT_BASEURL, 
-      endpoints: {
-        users: `/user`,
-        auth: `/auth`
-      },
     },
   },
   http: {
