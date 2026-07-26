@@ -6,6 +6,7 @@ export type UserDto = {
   phone: string;
   address: string;
   imageUrl: string | null;
+  authProvider: "LOCAL" | "GOOGLE";
   role: "ADMIN" | "MANAGER" | "CLIENT";
   createdAt: string;
   updatedAt: string;
