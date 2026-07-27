@@ -126,13 +126,27 @@ export default async function ProductDetailPage({
           </p>
 
           <div className="mt-8 hidden lg:block">
-            <ProductDetailActions status={product.status} />
+            <ProductDetailActions
+              status={product.status}
+              productId={product.id}
+              name={product.name}
+              price={product.price}
+              imageUrl={product.imageUrl}
+              stock={product.stock}
+            />
           </div>
         </div>
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-white p-4 lg:hidden">
-        <ProductDetailActions status={product.status} />
+        <ProductDetailActions
+          status={product.status}
+          productId={product.id}
+          name={product.name}
+          price={product.price}
+          imageUrl={product.imageUrl}
+          stock={product.stock}
+        />
       </div>
     </div>
   );

@@ -6,10 +6,12 @@ import { toast } from "react-toastify";
 import { ROUTES } from "@/constants/route";
 import { ProductResDto } from "@/features/products/types/product.types";
 import WishlistButton from "@/components/shop/wishlist-button";
+import { useAppDispatch } from "@/store/hooks";
+import { addItem } from "@/store/cart.slice";
 
 type ProductCardProps = Pick<
   ProductResDto,
-  "id" | "name" | "categoryName" | "price" | "imageUrl" | "status"
+  "id" | "name" | "categoryName" | "price" | "imageUrl" | "status" | "stock"
 >;
 
 export default function ProductCard({
@@ -19,13 +21,16 @@ export default function ProductCard({
   price,
   imageUrl,
   status,
+  stock,
 }: ProductCardProps) {
   const isOutOfStock = status === "OUT_OF_STOCK";
+  const dispatch = useAppDispatch();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toast.info("Le panier arrive bientôt !");
+    dispatch(addItem({ productId: id, name, price, imageUrl, stock }));
+    toast.success(`${name} ajouté au panier !`);
   };
 
   return (

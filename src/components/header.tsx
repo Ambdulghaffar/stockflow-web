@@ -7,12 +7,15 @@ import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
 import { ROUTES } from "@/constants/route";
 import { UserMenu } from "./dashboard/user-menu";
+import { useAppSelector } from "@/store/hooks";
+import { selectCartTotalQuantity } from "@/store/cart.slice";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const { data: session } = useSession();
   const router = useRouter();
+  const cartCount = useAppSelector(selectCartTotalQuantity);
 
   const navLinks = [
     { href: "/", label: "Accueil" },
@@ -61,7 +64,14 @@ export default function Header() {
               className="pl-8 pr-3 py-2 w-48 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </form>
-          <ShoppingCart className="h-5 w-5 text-gray-600 cursor-pointer" />
+          <Link href={ROUTES.CART} className="relative">
+            <ShoppingCart className="h-5 w-5 text-gray-600" />
+            {cartCount > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-pink-600 text-[10px] font-bold text-white">
+                {cartCount > 9 ? "9+" : cartCount}
+              </span>
+            )}
+          </Link>
 
           {session ? (
             <UserMenu variant="compact" showDashboardLink={true} />

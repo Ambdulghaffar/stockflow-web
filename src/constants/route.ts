@@ -40,4 +40,5 @@ export const ROUTES={
     CATEGORIES_LIST:"/categories",
     PRODUCTS_LIST:"/products",
     PRODUCT_DETAIL:(id: number) => `/products/${id}`,
+    CART:"/cart",
 } as const

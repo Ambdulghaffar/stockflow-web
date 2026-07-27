@@ -5,19 +5,33 @@ import { Minus, Plus, ShoppingBag } from "lucide-react";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { ProductStatus } from "@/features/products/types/product.types";
+import { useAppDispatch } from "@/store/hooks";
+import { addItem } from "@/store/cart.slice";
 
 interface ProductDetailActionsProps {
   status: ProductStatus;
+  productId: number;
+  name: string;
+  price: number;
+  imageUrl: string | null;
+  stock: number;
 }
 
 export default function ProductDetailActions({
   status,
+  productId,
+  name,
+  price,
+  imageUrl,
+  stock,
 }: ProductDetailActionsProps) {
   const [quantity, setQuantity] = useState(1);
   const isOutOfStock = status === "OUT_OF_STOCK";
+  const dispatch = useAppDispatch();
 
   const handleAddToCart = () => {
-    toast.info("Le panier arrive bientôt !");
+    dispatch(addItem({ productId, name, price, imageUrl, stock, quantity }));
+    toast.success(`${quantity} × ${name} ajouté(s) au panier !`);
   };
 
   return (
@@ -39,7 +53,7 @@ export default function ProductDetailActions({
           </span>
           <button
             type="button"
-            onClick={() => setQuantity((q) => q + 1)}
+            onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
             disabled={isOutOfStock}
             className="flex h-9 w-9 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Augmenter la quantité"
