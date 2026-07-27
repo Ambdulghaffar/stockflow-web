@@ -14,6 +14,9 @@ export const getAllProducts = async (
   status?: string,
   categoryId?: number,
   search?: string,
+  minPrice?: number,
+  maxPrice?: number,
+  excludeInactive?: boolean,
 ): Promise<PageResponse<ProductResDto>> => {
   try {
     const { data } = await apiClient.get<PageResponse<ProductResDto>>(
@@ -28,6 +31,9 @@ export const getAllProducts = async (
           ...(status && status !== "" && { status }),
           ...(categoryId && { categoryId }),
           ...(search && search !== "" && { search }),
+          ...(minPrice !== undefined && { minPrice }),
+          ...(maxPrice !== undefined && { maxPrice }),
+          ...(excludeInactive !== undefined && { excludeInactive }),
         },
       },
     );

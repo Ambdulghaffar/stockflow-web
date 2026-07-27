@@ -2,6 +2,7 @@
 import { Menu, Search, ShoppingCart, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
 import { ROUTES } from "@/constants/route";
@@ -9,12 +10,14 @@ import { UserMenu } from "./dashboard/user-menu";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const { data: session } = useSession();
+  const router = useRouter();
 
   const navLinks = [
     { href: "/", label: "Accueil" },
-    { href: "/products", label: "Produits" },
-    { href: "/categories", label: "Catégories" },
+    { href: ROUTES.PRODUCTS_LIST, label: "Produits" },
+    { href: ROUTES.CATEGORIES_LIST, label: "Catégories" },
     { href: "/contact", label: "Contact" },
   ];
 
@@ -38,9 +41,26 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <div className="hidden md:flex">
-            <Search className="h-5 w-5 text-gray-600" />
-          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (searchValue.trim()) {
+                router.push(
+                  `${ROUTES.PRODUCTS_LIST}?search=${encodeURIComponent(searchValue)}`,
+                );
+              }
+            }}
+            className="hidden md:flex items-center relative"
+          >
+            <Search className="absolute left-2.5 h-4 w-4 text-gray-400" />
+            <input
+              type="search"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Rechercher..."
+              className="pl-8 pr-3 py-2 w-48 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+          </form>
           <ShoppingCart className="h-5 w-5 text-gray-600 cursor-pointer" />
 
           {session ? (

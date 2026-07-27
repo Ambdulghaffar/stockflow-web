@@ -1,4 +1,4 @@
-import BestSellersSection from "@/components/landing/BestSellersSection";
+import LatestProductsSection from "@/components/shop/latest-products-section";
 import CategoriesSection from "@/components/landing/CategoriesSection";
 import Footer from "@/components/landing/Footer";
 import HeroSection from "@/components/landing/HeroSection";
@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <HeroSection />
       <CategoriesSection />
-      <BestSellersSection />
+      <LatestProductsSection />
       <TestimonialsSection />
       <Footer />
     </>

@@ -36,5 +36,8 @@ export const ROUTES={
     DASHBOARD_ACCOUNT_PROFILE:"/dashboard/account/profile",
     DASHBOARD_PROFILE:"/dashboard/profile",
     DASHBOARD_NOTIFICATIONS:"/dashboard/notifications",
-    AUTH_REDIRECT:"/auth/redirect"
+    AUTH_REDIRECT:"/auth/redirect",
+    CATEGORIES_LIST:"/categories",
+    PRODUCTS_LIST:"/products",
+    PRODUCT_DETAIL:(id: number) => `/products/${id}`,
 } as const
