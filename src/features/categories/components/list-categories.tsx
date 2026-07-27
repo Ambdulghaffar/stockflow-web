@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CategoryResDto } from "../types/category.types";
 import { ROUTES } from "@/constants/route";
 import { truncateText } from "@/utils/truncate-text";
@@ -131,7 +131,6 @@ export default function ListCategories({
               <TableHead>Nom</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Nombre de produits</TableHead>
-              <TableHead>Image</TableHead>
               <TableHead className="hidden md:table-cell">
                 Date de création
               </TableHead>
@@ -142,23 +141,26 @@ export default function ListCategories({
             {categories.content.length > 0 ? (
               categories.content.map((category) => (
                 <TableRow key={category.id}>
-                  <TableCell className="font-medium">{category.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-9 w-9 rounded-md">
+                        <AvatarImage
+                          src={category.imageUrl ?? ""}
+                          alt={category.name}
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="rounded-md text-xs">
+                          {category.name.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span>{category.name}</span>
+                    </div>
+                  </TableCell>
                   <TableCell title={category.description}>
                     {truncateText(category.description, 40)}
                   </TableCell>
                   <TableCell className="text-center text-pink-600">
                     {category.productCount}
-                  </TableCell>
-                  <TableCell>
-                    {category.imageUrl ? (
-                      <Badge variant="secondary" className="text-xs">
-                        Image présente
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="text-xs">
-                        Pas d&apos;image
-                      </Badge>
-                    )}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {formatDate(category.createdAt)}

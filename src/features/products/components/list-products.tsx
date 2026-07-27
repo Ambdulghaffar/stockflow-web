@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProductResDto, ProductStatus } from "../types/product.types";
 import { ROUTES } from "@/constants/route";
 import { truncateText } from "@/utils/truncate-text";
@@ -172,7 +173,19 @@ export default function ListProducts({
               products.content.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell className="font-medium">
-                    {truncateText(product.name, 40)}
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-9 w-9 rounded-md">
+                        <AvatarImage
+                          src={product.imageUrl ?? ""}
+                          alt={product.name}
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="rounded-md text-xs">
+                          {product.name.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span>{truncateText(product.name, 40)}</span>
+                    </div>
                   </TableCell>
                   <TableCell>{product.categoryName}</TableCell>
                   <TableCell>{product.price.toFixed(2)} €</TableCell>
