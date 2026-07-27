@@ -32,6 +32,7 @@ import ConfirmationDialog from "@/components/confirmation-dialog";
 import { toast } from "react-toastify";
 import { deleteProductAction } from "../actions/product.actions";
 import { useSession } from "next-auth/react";
+import { getStockBadgeClasses } from "../utils/stock-badge";
 
 interface ListProductsProps {
   initialData: PageResponse<ProductResDto>;
@@ -55,16 +56,6 @@ const getStatusBadgeClasses = (status: ProductStatus): string => {
     default:
       return "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
   }
-};
-
-const getStockBadgeClasses = (stock: number): string => {
-  if (stock === 0) {
-    return "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300";
-  }
-  if (stock <= 10) {
-    return "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300";
-  }
-  return "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300";
 };
 
 export default function ListProducts({

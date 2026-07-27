@@ -1,6 +1,34 @@
-import FeaturePlaceholder from "@/components/dashboard/feature-placeholder";
-import { FileText } from "lucide-react";
+import StockMovementsList from "@/features/stock/components/stock-movements-list";
+import { getStockMovements } from "@/features/stock/services/stock-movement.services";
+import { getAllProducts } from "@/features/products/services/product.services";
+import { StockMovementType } from "@/features/stock/types/stock-movement.types";
 
-export default function StockMovementsPage() {
-  return <FeaturePlaceholder icon={FileText} title="Mouvements de stock" />;
+interface StockMovementsPageProps {
+  searchParams: Promise<{ page?: string; type?: string }>;
+}
+
+export default async function StockMovementsPage({
+  searchParams,
+}: StockMovementsPageProps) {
+  const { page, type } = await searchParams;
+  const currentPage = Number(page) || 0;
+
+  const [movements, products] = await Promise.all([
+    getStockMovements(
+      currentPage,
+      10,
+      undefined,
+      type as StockMovementType | undefined,
+    ),
+    getAllProducts(0, 100, "name", "asc"),
+  ]);
+
+  return (
+    <StockMovementsList
+      initialData={movements}
+      currentPage={currentPage}
+      currentType={type || ""}
+      products={products.content}
+    />
+  );
 }
