@@ -1,3 +1,3 @@
 export const UPLOADS_ENDPOINTS = {
-    signature: "/signature"
+    signature: "/uploads/signature"
 } as const;

@@ -18,24 +18,32 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { Role } from "@/constants/nav-items";
 
-export function NavMain({
-  items,
-}: {
+// Objet de correspondance : une expression, pas une instruction —
+// s'utilise directement dans le JSX avec {}
+const GROUP_LABELS: Record<Role, string> = {
+  ADMIN: "Administration",
+  MANAGER: "Manager",
+  CLIENT: "Client",
+};
+
+interface NavMainProps {
   items: {
     title: string;
     url: string;
     icon?: LucideIcon;
     isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
+    items?: { title: string; url: string }[];
   }[];
-}) {
+  role?: Role; // ← reçu en prop, pas re-demandé via useSession()
+}
+
+export function NavMain({items, role}: NavMainProps) {
+  const groupLabel = role ? GROUP_LABELS[role] : "Tableau de bord";
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Administrateur</SidebarGroupLabel>
+      <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item, index) => (
           <div key={index}>

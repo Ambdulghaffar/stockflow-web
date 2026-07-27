@@ -48,7 +48,7 @@ export function AppSidebar({ initialRole, ...props }: AppSidebarProps) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} />
+        <NavMain items={navMain} role={role} />
       </SidebarContent>
       <SidebarFooter>
         <UserMenu variant="sidebar" />
