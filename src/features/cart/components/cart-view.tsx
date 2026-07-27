@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import { Minus, Package, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,9 +20,10 @@ export default function CartView() {
   const items = useAppSelector(selectCartItems);
   const totalPrice = useAppSelector(selectCartTotalPrice);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleCheckout = () => {
-    toast.info("Le passage de commande arrive bientôt !");
+    router.push(ROUTES.CHECKOUT);
   };
 
   if (!hasHydrated) {
