@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import ImageUploadField from "@/components/dashboard/image-upload-field";
 import {
   Select,
   SelectContent,
@@ -259,66 +260,60 @@ export default function ProductForm(props: ProductFormProps) {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="imageUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-700 font-medium">
-                          URL de l&apos;image
-                        </FormLabel>
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700 font-medium">
+                        Image du produit
+                      </FormLabel>
+                      <FormControl>
+                        <ImageUploadField
+                          currentImageUrl={field.value}
+                          onUploadSuccess={(url) => field.onChange(url)}
+                          folder="products"
+                        />
+                      </FormControl>
+                      <FormDescription className="text-gray-500">
+                        Une image représentant le produit (optionnel).
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700 font-medium">
+                        Statut
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
-                          <Input
-                            placeholder="https://..."
-                            {...field}
-                            className="py-3 bg-gray-50 border-gray-200 focus:ring-pink-500 focus:border-pink-500 transition-colors"
-                          />
+                          <SelectTrigger className="py-3 bg-gray-50 border-gray-200 w-full">
+                            <SelectValue placeholder="Sélectionnez un statut" />
+                          </SelectTrigger>
                         </FormControl>
-                        <FormDescription className="text-gray-500">
-                          Lien vers l&apos;image du produit (optionnel).
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-700 font-medium">
-                          Statut
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="py-3 bg-gray-50 border-gray-200 w-full">
-                              <SelectValue placeholder="Sélectionnez un statut" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-white border-gray-200">
-                            {STATUS_OPTIONS.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription className="text-gray-500">
-                          Détermine la visibilité du produit dans le catalogue.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                        <SelectContent className="bg-white border-gray-200">
+                          {STATUS_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription className="text-gray-500">
+                        Détermine la visibilité du produit dans le catalogue.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}

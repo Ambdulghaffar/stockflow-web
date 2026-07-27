@@ -5,6 +5,7 @@ export interface AuthResponse {
   email: string;
   username: string;
   role: string; // ou UserRole si tu as un enum
+  imageUrl: string | null;
 }
 
 export interface RegisterDto {

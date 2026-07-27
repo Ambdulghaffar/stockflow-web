@@ -62,6 +62,7 @@ export const authOptions: NextAuthOptions = {
           id: data.email,
           email: data.email,
           name: data.username,
+          image: data.imageUrl,
           roles: [data.role],
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
@@ -119,6 +120,7 @@ export const authOptions: NextAuthOptions = {
 
         user.id = data.email;
         user.name = data.username ?? user.name;
+        user.image = data.imageUrl ?? user.image;
         user.roles = [data.role];
         user.accessToken = data.accessToken;
         user.refreshToken = data.refreshToken;
@@ -131,19 +133,26 @@ export const authOptions: NextAuthOptions = {
       }
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
 
       // ÉTAPE A : Login Initial
       if (user) {
         token.sub = user.id;
         token.email = user.email;
         token.name = user.name;
+        token.image = user.image;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         token.roles = (user as any).roles;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
         // Calcul du timestamp d'expiration : MAINTENANT + Durée du backend
         token.expiresAt = Date.now() + user.expiresIn * 1000;
+      }
+
+      // Rafraîchissement partiel de session déclenché depuis le client via update()
+      // (ex: après upload d'un nouvel avatar), sans reconnexion complète
+      if (trigger === "update" && session?.image !== undefined) {
+        token.image = session.image;
       }
 
       // ÉTAPE B : Vérification si encore valide (avec marge de 30s)
@@ -194,6 +203,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub as string;
         session.user.name = token.name as string;
         session.user.email = token.email as string;
+        session.user.image = token.image as string | undefined;
         session.user.roles = token.roles as string[];
         session.accessToken = token.accessToken as string;
         session.error = token.error as string | undefined;

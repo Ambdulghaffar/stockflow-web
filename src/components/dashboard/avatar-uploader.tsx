@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Camera, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getUploadSignatureAction } from "@/lib/uploads/upload.actions";
+import { useCloudinaryUpload } from "@/lib/uploads/use-cloudinary-upload";
 
 interface AvatarUploaderProps {
   currentImageUrl?: string | null;
@@ -20,7 +20,7 @@ export default function AvatarUploader({
   onUploadSuccess,
   folder = "avatars",
 }: AvatarUploaderProps) {
-  const [isUploading, setIsUploading] = useState(false);
+  const { upload, isUploading } = useCloudinaryUpload(folder);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,45 +28,15 @@ export default function AvatarUploader({
     event.target.value = "";
     if (!file) return;
 
-    setIsUploading(true);
     try {
-      const signatureResult = await getUploadSignatureAction(folder);
-      if (!signatureResult.success) {
-        throw new Error(signatureResult.error);
-      }
-      const { signature, timestamp, apiKey, folder: signedFolder } =
-        signatureResult.data;
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("api_key", apiKey);
-      formData.append("timestamp", String(timestamp));
-      formData.append("signature", signature);
-      formData.append("folder", signedFolder);
-
-      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Échec de l'envoi de l'image.");
-      }
-
-      const data = await response.json();
-      onUploadSuccess(data.secure_url);
+      const url = await upload(file);
+      onUploadSuccess(url);
     } catch (error) {
       toast.error(
         error instanceof Error
           ? error.message
           : "Erreur lors de l'envoi de l'image.",
       );
-    } finally {
-      setIsUploading(false);
     }
   };
 

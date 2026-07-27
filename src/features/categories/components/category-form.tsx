@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import ImageUploadField from "@/components/dashboard/image-upload-field";
 import {
   categorySchema,
   CategoryFormValues,
@@ -108,53 +109,51 @@ export default function CategoryForm(props: CategoryFormProps) {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="p-8 space-y-6"
               >
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-700 font-medium">
-                          Nom de la catégorie
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="ex: Montres connectées"
-                            {...field}
-                            className="py-3 bg-gray-50 border-gray-200 focus:ring-pink-500 focus:border-pink-500 transition-colors"
-                          />
-                        </FormControl>
-                        <FormDescription className="text-gray-500">
-                          Choisissez un nom de catégorie unique et clair.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700 font-medium">
+                        Nom de la catégorie
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="ex: Montres connectées"
+                          {...field}
+                          className="py-3 bg-gray-50 border-gray-200 focus:ring-pink-500 focus:border-pink-500 transition-colors"
+                        />
+                      </FormControl>
+                      <FormDescription className="text-gray-500">
+                        Choisissez un nom de catégorie unique et clair.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="imageUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-700 font-medium">
-                          URL de l&apos;image
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="https://..."
-                            {...field}
-                            className="py-3 bg-gray-50 border-gray-200 focus:ring-pink-500 focus:border-pink-500 transition-colors"
-                          />
-                        </FormControl>
-                        <FormDescription className="text-gray-500">
-                          Lien vers l&apos;image représentant la catégorie (optionnel).
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700 font-medium">
+                        Image de la catégorie
+                      </FormLabel>
+                      <FormControl>
+                        <ImageUploadField
+                          currentImageUrl={field.value}
+                          onUploadSuccess={(url) => field.onChange(url)}
+                          folder="categories"
+                        />
+                      </FormControl>
+                      <FormDescription className="text-gray-500">
+                        Une image représentant la catégorie (optionnel).
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}

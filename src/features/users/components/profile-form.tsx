@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
 
@@ -48,6 +49,7 @@ function getInitials(name: string): string {
 }
 
 export default function ProfileForm({ user }: ProfileFormProps) {
+  const { update } = useSession();
   const [imageUrl, setImageUrl] = useState(user.imageUrl);
 
   const infoForm = useForm<ProfileInfoFormValues>({
@@ -77,6 +79,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
       imageUrl: url,
     });
     if (result.success) {
+      await update({ image: url });
       toast.success("Photo de profil mise à jour avec succès !");
     } else {
       toast.error(result.error);
