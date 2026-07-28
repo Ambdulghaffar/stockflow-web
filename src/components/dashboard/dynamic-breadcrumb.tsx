@@ -37,7 +37,19 @@ export default function DynamicBreadcrumb({ values }: DynamicBreadcrumbProps) {
 
   // Segments qui ne correspondent à aucune page navigable en eux-mêmes
   // (ex: /dashboard/categories/update n'existe pas, seul /update/[id] existe)
-  const NON_NAVIGABLE_SEGMENTS = new Set(["update", "edit", "create", "new"]);
+  const NON_NAVIGABLE_SEGMENTS = new Set([
+    "update",
+    "edit",
+    "create",
+    "new",
+    "sales",
+    "stock",
+    "suppliers",
+    "reports",
+    "marketing",
+    "settings",
+    "account",
+  ]);
 
   const breadcrumbs = segments
     .map((segment, index) => ({
