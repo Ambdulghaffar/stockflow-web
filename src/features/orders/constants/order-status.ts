@@ -18,3 +18,13 @@ export const ORDER_STATUS_BADGE_CLASSES: Record<OrderStatus, string> = {
   DELIVERED: "bg-emerald-50 text-emerald-700",
   CANCELLED: "bg-red-50 text-red-700",
 };
+
+// Transitions de statut valides côté admin (le backend les valide aussi,
+// ceci évite juste de proposer des options invalides dans l'UI).
+export const ORDER_STATUS_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
+  PENDING: ["CONFIRMED", "CANCELLED"],
+  CONFIRMED: ["SHIPPED", "CANCELLED"],
+  SHIPPED: ["DELIVERED"],
+  DELIVERED: [],
+  CANCELLED: [],
+};

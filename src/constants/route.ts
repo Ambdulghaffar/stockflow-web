@@ -44,4 +44,5 @@ export const ROUTES={
     CHECKOUT:"/checkout",
     ORDER_CONFIRMATION:(id: number) => `/order-confirmation/${id}`,
     DASHBOARD_ACCOUNT_ORDER_DETAIL:(id: number) => `/dashboard/account/orders/${id}`,
+    DASHBOARD_SALES_ORDER_DETAIL:(id: number) => `/dashboard/sales/orders/${id}`,
 } as const
