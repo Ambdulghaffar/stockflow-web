@@ -1,4 +1,4 @@
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import ListOrders from "@/features/orders/components/list-orders";
 import { getAllOrders } from "@/features/orders/services/order.services";
 import { OrderStatus } from "@/features/orders/types/order.types";
@@ -20,13 +20,12 @@ export default async function SalesOrdersPage({
   );
 
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
+    <DashboardPageContainer>
       <ListOrders
         initialData={orders}
         currentPage={currentPage}
         currentStatus={status || ""}
       />
-    </div>
+    </DashboardPageContainer>
   );
 }

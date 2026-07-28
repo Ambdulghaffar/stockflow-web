@@ -27,7 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
 import DataTablePagination from "@/components/dashboard/data-table-pagination";
 import StockAdjustmentDialog from "@/features/stock/components/stock-adjustment-dialog";
 import {
@@ -86,9 +85,7 @@ export default function StockMovementsList({
   };
 
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
-
+    <>
       <Card>
         <CardHeader>
           <CardTitle>Historique des mouvements de stock</CardTitle>
@@ -214,6 +211,6 @@ export default function StockMovementsList({
           />
         </CardContent>
       </Card>
-    </div>
+    </>
   );
 }

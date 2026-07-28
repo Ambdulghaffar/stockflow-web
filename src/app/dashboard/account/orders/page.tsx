@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Receipt } from "lucide-react";
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import { Button } from "@/components/ui/button";
 import DataTablePagination from "@/components/dashboard/data-table-pagination";
 import OrderListItem from "@/features/orders/components/order-list-item";
@@ -24,10 +24,8 @@ export default async function AccountOrdersPage({
     `${ROUTES.DASHBOARD_ACCOUNT_ORDERS}?page=${targetPage}`;
 
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
-
-      <div className="mx-5">
+    <DashboardPageContainer>
+      <div>
         <h1 className="text-2xl font-bold tracking-tight text-gray-900">
           Mes commandes
         </h1>
@@ -74,6 +72,6 @@ export default async function AccountOrdersPage({
           />
         </>
       )}
-    </div>
+    </DashboardPageContainer>
   );
 }

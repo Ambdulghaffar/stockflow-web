@@ -1,3 +1,4 @@
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import StockMovementsList from "@/features/stock/components/stock-movements-list";
 import { getStockMovements } from "@/features/stock/services/stock-movement.services";
 import { getAllProducts } from "@/features/products/services/product.services";
@@ -24,11 +25,13 @@ export default async function StockMovementsPage({
   ]);
 
   return (
-    <StockMovementsList
-      initialData={movements}
-      currentPage={currentPage}
-      currentType={type || ""}
-      products={products.content}
-    />
+    <DashboardPageContainer>
+      <StockMovementsList
+        initialData={movements}
+        currentPage={currentPage}
+        currentType={type || ""}
+        products={products.content}
+      />
+    </DashboardPageContainer>
   );
 }

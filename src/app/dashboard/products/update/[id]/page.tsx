@@ -1,4 +1,4 @@
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import ProductForm from "@/features/products/components/product-form";
 import { getProductById } from "@/features/products/services/product.services";
 import { getAllCategories } from "@/features/categories/services/category.services";
@@ -22,13 +22,12 @@ export default async function UpdateProductPage({
   if (!product) notFound();
 
   return (
-    <>
-      <SidebarBreadcrumb values={{ [id]: product.name }} />
+    <DashboardPageContainer breadcrumbValues={{ [id]: product.name }}>
       <ProductForm
         mode="edit"
         defaultValues={product}
         categories={categories.content}
       />
-    </>
+    </DashboardPageContainer>
   );
 }

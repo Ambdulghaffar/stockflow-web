@@ -19,7 +19,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
 import StockAdjustmentDialog from "@/features/stock/components/stock-adjustment-dialog";
 import { getStockBadgeClasses } from "@/features/products/utils/stock-badge";
 import {
@@ -54,9 +53,7 @@ export default function StockLevelsList({
   initialData,
 }: StockLevelsListProps) {
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
-
+    <>
       <Card>
         <CardHeader>
           <CardTitle>État des stocks</CardTitle>
@@ -139,6 +136,6 @@ export default function StockLevelsList({
           </Table>
         </CardContent>
       </Card>
-    </div>
+    </>
   );
 }

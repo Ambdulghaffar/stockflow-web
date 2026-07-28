@@ -1,4 +1,4 @@
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import UserForm from "@/features/users/components/user-form";
 import { getUserById } from "@/features/users/services/user.services";
 import { notFound } from "next/navigation";
@@ -17,9 +17,8 @@ export default async function EditUserPage({
 
   if (!user) notFound();
   return (
-    <>
-      <SidebarBreadcrumb values={{ [id]: user.username }} />
+    <DashboardPageContainer breadcrumbValues={{ [id]: user.username }}>
       <UserForm mode="edit" defaultValues={user} />
-    </>
+    </DashboardPageContainer>
   );
 }

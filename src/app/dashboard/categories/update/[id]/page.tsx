@@ -1,4 +1,4 @@
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import CategoryForm from "@/features/categories/components/category-form";
 import { getCategoryById } from "@/features/categories/services/category.services";
 import { notFound } from "next/navigation";
@@ -18,9 +18,8 @@ export default async function UpdateCategoryPage({
   if (!category) notFound();
 
   return (
-    <>
-      <SidebarBreadcrumb values={{ [id]: category.name }} />
+    <DashboardPageContainer breadcrumbValues={{ [id]: category.name }}>
       <CategoryForm mode="edit" defaultValues={category} />
-    </>
+    </DashboardPageContainer>
   );
 }

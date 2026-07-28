@@ -1,7 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/route";
 
@@ -17,8 +17,7 @@ export default function FeaturePlaceholder({
   description = "Cette fonctionnalité est en cours de développement et sera bientôt disponible.",
 }: FeaturePlaceholderProps) {
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
+    <DashboardPageContainer>
       <div className="relative flex min-h-[60vh] items-center justify-center overflow-hidden rounded-2xl border border-pink-100 bg-gradient-to-br from-white via-pink-50/60 to-white shadow-sm">
         <div className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-gradient-to-br from-pink-300/30 to-pink-500/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-gradient-to-tr from-pink-200/40 to-rose-300/10 blur-3xl" />
@@ -39,6 +38,6 @@ export default function FeaturePlaceholder({
           </Button>
         </div>
       </div>
-    </div>
+    </DashboardPageContainer>
   );
 }

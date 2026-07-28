@@ -1,5 +1,5 @@
 import PageStatsHeader from "@/components/dashboard/page-stats-header";
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import ListCategories from "@/features/categories/components/list-categories";
 import { getAllCategories } from "@/features/categories/services/category.services";
 import { UsersRound } from "lucide-react";
@@ -31,9 +31,7 @@ export default async function CategoriesPage({
   ]);
 
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
-
+    <DashboardPageContainer>
       <PageStatsHeader
         icon={UsersRound}
         title="Gestion des catégories de produits"
@@ -52,6 +50,6 @@ export default async function CategoriesPage({
         currentPage={Number(page) || 0}
         currentSearch={search || ""}
       />
-    </div>
+    </DashboardPageContainer>
   );
 }

@@ -1,5 +1,5 @@
 import PageStatsHeader from "@/components/dashboard/page-stats-header";
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import ListProducts from "@/features/products/components/list-products";
 import { getAllProducts } from "@/features/products/services/product.services";
 import { Package } from "lucide-react";
@@ -33,8 +33,7 @@ export default async function ProductsPage({
   ]);
 
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
+    <DashboardPageContainer>
       <PageStatsHeader
         icon={Package}
         title="Gestion des produits"
@@ -53,6 +52,6 @@ export default async function ProductsPage({
         currentPage={Number(page) || 0}
         currentSearch={search || ""}
       />
-    </div>
+    </DashboardPageContainer>
   );
 }

@@ -1,4 +1,4 @@
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SalesChart } from "@/components/dashboard/sales-chart";
 import DateRangeFilter from "@/features/reports/components/date-range-filter";
@@ -37,9 +37,7 @@ export default async function ReportsSalesPage({
   const report = await getSalesReport(startDate, endDate);
 
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
-
+    <DashboardPageContainer>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -167,6 +165,6 @@ export default async function ReportsSalesPage({
           </CardContent>
         </Card>
       </div>
-    </div>
+    </DashboardPageContainer>
   );
 }

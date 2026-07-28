@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants/route";
@@ -27,10 +27,8 @@ export default async function OrderDetailPage({
   if (!order) notFound();
 
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb values={{ [id]: `Commande #${order.id}` }} />
-
-      <div className="flex flex-wrap items-center justify-between gap-4 mx-4">
+    <DashboardPageContainer breadcrumbValues={{ [id]: `Commande #${order.id}` }}>
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">
             Commande #{order.id}
@@ -85,6 +83,6 @@ export default async function OrderDetailPage({
           Retour à mes commandes
         </Link>
       </Button>
-    </div>
+    </DashboardPageContainer>
   );
 }

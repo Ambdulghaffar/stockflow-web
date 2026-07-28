@@ -1,4 +1,4 @@
-import SidebarBreadcrumb from "@/components/dashboard/sidebar-breadcrumb";
+import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import { StatCard } from "@/components/dashboard/stat-card";
 import ListUser from "@/features/users/components/list-user";
 import {
@@ -41,9 +41,7 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
   );
 
   return (
-    <div className="space-y-8">
-      <SidebarBreadcrumb />
-
+    <DashboardPageContainer>
       {/* Section d'introduction avec statistiques */}
       <div className="bg-gradient-to-r from-pink-50 to-white rounded-2xl p-6 border border-pink-100">
         <div className="flex items-center gap-3 mb-6">
@@ -98,8 +96,8 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
         initialData={{ ...data, content: filteredContent }}
         currentPage={Number(page) || 0}
         currentRole={role || "all"}
-        currentSearch={search || ""} 
+        currentSearch={search || ""}
       />
-    </div>
+    </DashboardPageContainer>
   );
 }
