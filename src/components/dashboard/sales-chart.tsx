@@ -9,28 +9,24 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import dayjs from "dayjs";
+import { DailyRevenueDto } from "@/features/reports/types/report.types";
 
-const data = [
-  { name: "Jan", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Fév", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Mar", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Avr", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Mai", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Juin", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Juil", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Aoû", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Sep", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Oct", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Nov", total: Math.floor(Math.random() * 2000) + 500 },
-  { name: "Déc", total: Math.floor(Math.random() * 2000) + 500 },
-];
+interface SalesChartProps {
+  data: DailyRevenueDto[];
+}
 
-export function SalesChart() {
+export function SalesChart({ data }: SalesChartProps) {
+  const chartData = data.map((entry) => ({
+    date: dayjs(entry.date).format("DD/MM"),
+    revenue: entry.revenue,
+  }));
+
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
+      <BarChart data={chartData}>
         <XAxis
-          dataKey="name"
+          dataKey="date"
           stroke="#888888"
           fontSize={12}
           tickLine={false}
@@ -41,7 +37,7 @@ export function SalesChart() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `${value} €`}
         />
         <Tooltip
           cursor={{ fill: "transparent" }}
@@ -50,9 +46,18 @@ export function SalesChart() {
             border: "1px solid #ccc",
             borderRadius: "0.5rem",
           }}
+          formatter={(value) => [
+            `${Number(value).toFixed(2)} €`,
+            "Chiffre d'affaires",
+          ]}
         />
         <Legend iconType="circle" />
-        <Bar dataKey="total" fill="#ec4899" radius={[4, 4, 0, 0]} />
+        <Bar
+          dataKey="revenue"
+          name="Chiffre d'affaires"
+          fill="#ec4899"
+          radius={[4, 4, 0, 0]}
+        />
       </BarChart>
     </ResponsiveContainer>
   );
