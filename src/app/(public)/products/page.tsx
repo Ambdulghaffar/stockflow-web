@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { PackageSearch, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -103,14 +104,16 @@ export default async function ProductsCatalogPage({
               <SheetTitle>Filtre</SheetTitle>
             </SheetHeader>
             <div className="px-4 pb-6">
-              <ProductFilters
-                categories={categories.content}
-                currentCategoryId={parsedCategoryId}
-                currentMinPrice={parsedMinPrice}
-                currentMaxPrice={parsedMaxPrice}
-                currentSortBy={sortBy}
-                currentSortDir={sortDir}
-              />
+              <Suspense fallback={null}>
+                <ProductFilters
+                  categories={categories.content}
+                  currentCategoryId={parsedCategoryId}
+                  currentMinPrice={parsedMinPrice}
+                  currentMaxPrice={parsedMaxPrice}
+                  currentSortBy={sortBy}
+                  currentSortDir={sortDir}
+                />
+              </Suspense>
             </div>
           </SheetContent>
         </Sheet>
@@ -118,14 +121,16 @@ export default async function ProductsCatalogPage({
 
       <div className="flex flex-col gap-10 lg:flex-row">
         <div className="hidden lg:block lg:w-[280px] lg:shrink-0">
-          <ProductFilters
-            categories={categories.content}
-            currentCategoryId={parsedCategoryId}
-            currentMinPrice={parsedMinPrice}
-            currentMaxPrice={parsedMaxPrice}
-            currentSortBy={sortBy}
-            currentSortDir={sortDir}
-          />
+          <Suspense fallback={null}>
+            <ProductFilters
+              categories={categories.content}
+              currentCategoryId={parsedCategoryId}
+              currentMinPrice={parsedMinPrice}
+              currentMaxPrice={parsedMaxPrice}
+              currentSortBy={sortBy}
+              currentSortDir={sortDir}
+            />
+          </Suspense>
         </div>
 
         <div className="flex-1">
@@ -137,7 +142,8 @@ export default async function ProductsCatalogPage({
                   Aucun produit ne correspond à votre recherche
                 </p>
                 <p className="mt-1 text-sm text-gray-600">
-                  Essayez d&apos;élargir vos critères ou réinitialisez les filtres.
+                  Essayez d&apos;élargir vos critères ou réinitialisez les
+                  filtres.
                 </p>
               </div>
               <Button asChild variant="outline">

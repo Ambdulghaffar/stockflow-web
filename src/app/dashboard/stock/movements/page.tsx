@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import DashboardPageContainer from "@/components/dashboard/dashboard-page-container";
 import StockMovementsList from "@/features/stock/components/stock-movements-list";
 import { getStockMovements } from "@/features/stock/services/stock-movement.services";
@@ -26,12 +27,14 @@ export default async function StockMovementsPage({
 
   return (
     <DashboardPageContainer>
-      <StockMovementsList
-        initialData={movements}
-        currentPage={currentPage}
-        currentType={type || ""}
-        products={products.content}
-      />
+      <Suspense fallback={null}>
+        <StockMovementsList
+          initialData={movements}
+          currentPage={currentPage}
+          currentType={type || ""}
+          products={products.content}
+        />
+      </Suspense>
     </DashboardPageContainer>
   );
 }

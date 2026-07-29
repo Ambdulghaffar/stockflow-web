@@ -1,4 +1,4 @@
-// components/dashboard/sidebar-breadcrumb.tsx
+import { Suspense } from "react";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Separator } from "../ui/separator";
 import { UserMenu } from "./user-menu";
@@ -14,7 +14,9 @@ export default function SidebarBreadcrumb({ values }: SidebarBreadcrumbProps) {
       <div className="flex items-center gap-2 px-4">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
-        <DynamicBreadcrumb values={values} />
+        <Suspense fallback={null}>
+          <DynamicBreadcrumb values={values} />
+        </Suspense>
       </div>
       <div className="flex items-center gap-2 px-4">
         <UserMenu variant="compact" showDashboardLink={false} />

@@ -24,7 +24,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ROUTES } from "@/constants/route";
 import { ProductResDto } from "@/features/products/types/product.types";
 import { createSupplierOrderAction } from "../actions/supplier-order.actions";
@@ -41,11 +47,18 @@ interface SupplierOrderFormProps {
   products: ProductResDto[];
 }
 
-export default function SupplierOrderForm({ suppliers, products }: SupplierOrderFormProps) {
+export default function SupplierOrderForm({
+  suppliers,
+  products,
+}: SupplierOrderFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<SupplierOrderFormInput, unknown, SupplierOrderFormValues>({
+  const form = useForm<
+    SupplierOrderFormInput,
+    unknown,
+    SupplierOrderFormValues
+  >({
     resolver: zodResolver(supplierOrderSchema),
     defaultValues: {
       supplierId: suppliers[0]?.id ?? 0,
@@ -85,7 +98,7 @@ export default function SupplierOrderForm({ suppliers, products }: SupplierOrder
           })),
         });
 
-        if (result.success) {
+        if (result.success && result.order) {
           toast.success("Commande fournisseur créée avec succès !");
           router.push(ROUTES.DASHBOARD_SUPPLIERS_ORDER_DETAIL(result.order.id));
         } else {
@@ -127,7 +140,10 @@ export default function SupplierOrderForm({ suppliers, products }: SupplierOrder
             </CardHeader>
             <CardContent className="p-8 space-y-8">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-8"
+                >
                   <FormField
                     control={form.control}
                     name="supplierId"
@@ -137,7 +153,9 @@ export default function SupplierOrderForm({ suppliers, products }: SupplierOrder
                           Fournisseur
                         </FormLabel>
                         <Select
-                          onValueChange={(value) => field.onChange(Number(value))}
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          }
                           value={field.value ? String(field.value) : undefined}
                         >
                           <FormControl>
@@ -147,7 +165,10 @@ export default function SupplierOrderForm({ suppliers, products }: SupplierOrder
                           </FormControl>
                           <SelectContent className="bg-white border-gray-200">
                             {suppliers.map((supplier) => (
-                              <SelectItem key={supplier.id} value={String(supplier.id)}>
+                              <SelectItem
+                                key={supplier.id}
+                                value={String(supplier.id)}
+                              >
                                 {supplier.name}
                               </SelectItem>
                             ))}
@@ -168,7 +189,8 @@ export default function SupplierOrderForm({ suppliers, products }: SupplierOrder
                           Lignes de commande
                         </h3>
                         <p className="text-sm text-gray-500">
-                          Chaque ligne contient un produit, une quantité et un coût unitaire.
+                          Chaque ligne contient un produit, une quantité et un
+                          coût unitaire.
                         </p>
                       </div>
                       <Button
@@ -200,7 +222,11 @@ export default function SupplierOrderForm({ suppliers, products }: SupplierOrder
                                   onValueChange={(value) =>
                                     productField.onChange(Number(value))
                                   }
-                                  value={productField.value ? String(productField.value) : undefined}
+                                  value={
+                                    productField.value
+                                      ? String(productField.value)
+                                      : undefined
+                                  }
                                 >
                                   <FormControl>
                                     <SelectTrigger className="py-3 bg-white border-gray-200 w-full">
@@ -237,7 +263,9 @@ export default function SupplierOrderForm({ suppliers, products }: SupplierOrder
                                     min="1"
                                     step="1"
                                     {...quantityField}
-                                    value={quantityField.value as number | string}
+                                    value={
+                                      quantityField.value as number | string
+                                    }
                                     className="py-3 bg-white border-gray-200 focus:ring-pink-500 focus:border-pink-500 transition-colors"
                                   />
                                 </FormControl>

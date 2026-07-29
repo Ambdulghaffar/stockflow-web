@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { AuthVisualSection } from "@/components/auth-visual-section";
 import { LoginForm } from "@/features/auth/components/login-form";
 import Link from "next/link";
@@ -14,9 +15,7 @@ export default function LoginPage() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 ">
         <div className="w-full max-w-md">
           <div className="text-center mb-8 ">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Connectez-vous
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-900">Connectez-vous</h2>
             <p className="text-gray-500 mt-2">
               Pas encore de compte ?{" "}
               <Link
@@ -27,7 +26,9 @@ export default function LoginPage() {
               </Link>
             </p>
           </div>
-          <LoginForm />
+          <Suspense fallback={null}>
+            <LoginForm />
+          </Suspense>
         </div>
       </div>
     </div>

@@ -12,6 +12,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import WishlistButton from "@/components/shop/wishlist-button";
 import ProductDetailActions from "@/features/products/components/product-detail-actions";
+import RecordProductView from "@/features/products/components/record-product-view";
+import RecentlyViewedSection from "@/features/products/components/recently-viewed-section";
 import { getProductById } from "@/features/products/services/product.services";
 import { ROUTES } from "@/constants/route";
 import { ProductStatus } from "@/features/products/types/product.types";
@@ -46,6 +48,7 @@ export default async function ProductDetailPage({
 
   return (
     <div className="container mx-auto px-4 py-8 pb-28 md:px-6 lg:pb-8">
+      <RecordProductView productId={product.id} />
       <Breadcrumb className="mb-8">
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -137,6 +140,8 @@ export default async function ProductDetailPage({
           </div>
         </div>
       </div>
+
+      <RecentlyViewedSection excludeProductId={product.id} />
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-white p-4 lg:hidden">
         <ProductDetailActions

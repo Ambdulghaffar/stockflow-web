@@ -4,8 +4,9 @@ import {
   createProduct as createProductService,
   updateProduct as updateProductService,
   deleteProduct as deleteProductService,
+  getProductById as getProductByIdService,
 } from "../services/product.services";
-import { ProductReqDto } from "../types/product.types";
+import { ProductReqDto, ProductResDto } from "../types/product.types";
 
 export async function createProductAction(request: ProductReqDto) {
   try {
@@ -47,4 +48,13 @@ export async function deleteProductAction(productId: number) {
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
+}
+
+export async function getProductsByIdsAction(
+  ids: number[],
+): Promise<ProductResDto[]> {
+  const products = await Promise.all(
+    ids.map((id) => getProductByIdService(id)),
+  );
+  return products.filter((product): product is ProductResDto => product !== null);
 }
