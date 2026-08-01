@@ -4,7 +4,7 @@ import Footer from "@/components/landing/Footer";
 import HeroSection from "@/components/landing/HeroSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (

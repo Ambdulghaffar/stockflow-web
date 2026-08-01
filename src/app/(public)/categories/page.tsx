@@ -1,7 +1,7 @@
 import CategoryCard from "@/components/shop/category-card";
 import { getAllCategories } from "@/features/categories/services/category.services";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function CategoriesCatalogPage() {
   const categories = await getAllCategories(0, 50, "name", "asc", undefined, true);
