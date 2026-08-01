@@ -24,10 +24,8 @@ export default function ConfirmationDialog({
 }: ConfirmationDialogProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>
-        <button className="cursor-pointer" aria-label="Supprimer">
-          <Trash color="red" size={16} />
-        </button>
+      <AlertDialogTrigger className="cursor-pointer" aria-label="Supprimer">
+        <Trash color="red" size={16} />
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
         <AlertDialogHeader>
