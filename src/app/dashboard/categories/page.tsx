@@ -15,6 +15,8 @@ interface CategoriesPageProps {
   }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function CategoriesPage({
   searchParams,
 }: CategoriesPageProps) {

@@ -28,6 +28,8 @@ interface ProductsCatalogPageProps {
   }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductsCatalogPage({
   searchParams,
 }: ProductsCatalogPageProps) {

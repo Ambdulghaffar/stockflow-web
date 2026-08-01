@@ -7,6 +7,8 @@ interface SalesOrdersPageProps {
   searchParams: Promise<{ page?: string; status?: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function SalesOrdersPage({
   searchParams,
 }: SalesOrdersPageProps) {

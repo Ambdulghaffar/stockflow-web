@@ -3,6 +3,8 @@ import ProductForm from "@/features/products/components/product-form";
 import { getAllCategories } from "@/features/categories/services/category.services";
 import React from "react";
 
+export const dynamic = "force-dynamic";
+
 export default async function CreateProductPage() {
   const categories = await getAllCategories(0, 100, "name", "asc");
 

@@ -2,6 +2,8 @@ import DashboardPageContainer from "@/components/dashboard/dashboard-page-contai
 import StockLevelsList from "@/features/stock/components/stock-levels-list";
 import { getAllProducts } from "@/features/products/services/product.services";
 
+export const dynamic = "force-dynamic";
+
 export default async function StockLevelsPage() {
   const products = await getAllProducts(0, 50, "stock", "asc");
 

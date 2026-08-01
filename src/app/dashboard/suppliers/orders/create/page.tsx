@@ -3,6 +3,8 @@ import SupplierOrderForm from "@/features/suppliers/components/supplier-order-fo
 import { getAllProducts } from "@/features/products/services/product.services";
 import { getAllSuppliers } from "@/features/suppliers/services/supplier.services";
 
+export const dynamic = "force-dynamic";
+
 export default async function CreateSupplierOrderPage() {
   const [suppliers, products] = await Promise.all([
     getAllSuppliers(0, 100),

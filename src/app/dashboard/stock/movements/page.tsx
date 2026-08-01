@@ -9,6 +9,8 @@ interface StockMovementsPageProps {
   searchParams: Promise<{ page?: string; type?: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function StockMovementsPage({
   searchParams,
 }: StockMovementsPageProps) {

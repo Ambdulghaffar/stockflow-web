@@ -20,6 +20,8 @@ interface UsersPageProps {
   }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function UsersPage({ searchParams }: UsersPageProps) {
   const { page, size, sortBy, sortDir, role, search } = await searchParams;
   const session = await getServerSession(authOptions);

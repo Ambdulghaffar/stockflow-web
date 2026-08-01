@@ -30,6 +30,8 @@ interface ReportsStockPageProps {
   searchParams: Promise<{ startDate?: string; endDate?: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function ReportsStockPage({
   searchParams,
 }: ReportsStockPageProps) {

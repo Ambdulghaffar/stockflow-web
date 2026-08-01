@@ -5,7 +5,7 @@ import { ROUTES } from "@/constants/route";
 import { getAllCategories } from "@/features/categories/services/category.services";
 
 export default async function CategoriesSection() {
-  const categories = await getAllCategories(0, 6, "name", "asc");
+  const categories = await getAllCategories(0, 6, "name", "asc", undefined, true);
 
   return (
     <section className="py-16 bg-black text-white sm:py-24">

@@ -16,6 +16,7 @@ export default async function LatestProductsSection() {
     undefined,
     undefined,
     true,
+    true,
   );
 
   return (

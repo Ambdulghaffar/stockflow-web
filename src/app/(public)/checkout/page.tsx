@@ -5,6 +5,8 @@ import CheckoutForm from "@/features/orders/components/checkout-form";
 import { getCurrentUser } from "@/features/users/services/user.services";
 import { ROUTES } from "@/constants/route";
 
+export const dynamic = "force-dynamic";
+
 export default async function CheckoutPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect(ROUTES.LOGIN);

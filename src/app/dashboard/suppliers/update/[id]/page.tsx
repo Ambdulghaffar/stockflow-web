@@ -6,6 +6,8 @@ interface UpdateSupplierPageProps {
   params: Promise<{ id: string }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function UpdateSupplierPage({ params }: UpdateSupplierPageProps) {
   const { id } = await params;
   const numericId = Number(id);

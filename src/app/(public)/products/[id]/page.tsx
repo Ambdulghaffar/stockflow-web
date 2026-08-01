@@ -34,6 +34,8 @@ const STATUS_BADGE_CLASSES: Record<ProductStatus, string> = {
   OUT_OF_STOCK: "bg-red-50 text-red-700",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductDetailPage({
   params,
 }: ProductDetailPageProps) {

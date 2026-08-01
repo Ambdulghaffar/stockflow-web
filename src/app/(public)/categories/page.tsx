@@ -1,8 +1,10 @@
 import CategoryCard from "@/components/shop/category-card";
 import { getAllCategories } from "@/features/categories/services/category.services";
 
+export const revalidate = 60;
+
 export default async function CategoriesCatalogPage() {
-  const categories = await getAllCategories(0, 50, "name", "asc");
+  const categories = await getAllCategories(0, 50, "name", "asc", undefined, true);
 
   return (
     <div className="container mx-auto px-4 py-12 md:px-6">

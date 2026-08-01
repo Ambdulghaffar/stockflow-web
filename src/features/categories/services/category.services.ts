@@ -12,12 +12,15 @@ export const getAllCategories = async (
   sortBy = "id",
   sortDir = "desc",
   search?: string,
+  skipAuth = false,
 ): Promise<PageResponse<CategoryResDto>> => {
   try {
     const { data } = await apiClient.get<PageResponse<CategoryResDto>>(
       CATEGORIES_ENDPOINTS.base,
       {
-        headers: await getAuthHeaders(),
+        // skipAuth : appelé depuis des pages catalogue en ISR (revalidate) — getAuthHeaders()
+        // lit cookies()/headers(), incompatibles avec la génération statique.
+        headers: skipAuth ? {} : await getAuthHeaders(),
         params: {
           page,
           size,
@@ -29,7 +32,7 @@ export const getAllCategories = async (
     );
     return data;
   } catch (error) {
-    return handleApiError(error, "getAllUsers");
+    return handleApiError(error, "getAllCategories");
   }
 };
 

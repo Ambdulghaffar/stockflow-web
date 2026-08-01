@@ -11,6 +11,8 @@ interface SuppliersPageProps {
   }>;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function SuppliersPage({ searchParams }: SuppliersPageProps) {
   const { page, search } = await searchParams;
 

@@ -17,12 +17,15 @@ export const getAllProducts = async (
   minPrice?: number,
   maxPrice?: number,
   excludeInactive?: boolean,
+  skipAuth = false,
 ): Promise<PageResponse<ProductResDto>> => {
   try {
     const { data } = await apiClient.get<PageResponse<ProductResDto>>(
       PRODUCTS_ENDPOINTS.base,
       {
-        headers: await getAuthHeaders(),
+        // skipAuth : appelé depuis des pages catalogue en ISR (revalidate) — getAuthHeaders()
+        // lit cookies()/headers(), incompatibles avec la génération statique.
+        headers: skipAuth ? {} : await getAuthHeaders(),
         params: {
           page,
           size,
@@ -45,12 +48,15 @@ export const getAllProducts = async (
 
 export const getProductById = async (
   id: number,
+  skipAuth = false,
 ): Promise<ProductResDto | null> => {
   try {
     const { data } = await apiClient.get<ProductResDto>(
       PRODUCTS_ENDPOINTS.byId(id),
       {
-        headers: await getAuthHeaders(),
+        // skipAuth : appelé depuis la fiche produit publique en ISR (revalidate) —
+        // getAuthHeaders() lit cookies()/headers(), incompatibles avec la génération statique.
+        headers: skipAuth ? {} : await getAuthHeaders(),
       },
     );
     return data;
