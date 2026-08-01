@@ -1,0 +1,42 @@
+# dependencies
+node_modules
+.pnp
+.pnp.*
+
+# next.js
+.next
+out
+
+# testing
+coverage
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files — jamais dans l'image, injectés à l'exécution via docker-compose
+.env*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# git / IDE — inutiles dans l'image
+.git
+.gitignore
+.vscode
+.idea
+
+# docs — inutiles dans l'image
+*.md
+
+# fichiers Docker eux-mêmes — pas besoin de les copier DANS l'image qu'ils construisent
+docker-compose*.yml
+Dockerfile
+.dockerignore
