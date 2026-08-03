@@ -33,6 +33,7 @@ StockFlow is an inventory and sales management platform. This repository holds t
 | Styling | Tailwind CSS | ^4 |
 | Components | Radix UI primitives / shadcn-style `components/ui` | ^1.x–2.x |
 | HTTP | Axios | ^1.12.2 |
+| Media Upload | Cloudinary — direct signed upload via native `fetch` (no SDK) | — |
 | Testing | Jest, React Testing Library | ^30.4.2, ^16.3.2 |
 | Language | TypeScript | ^5 |
 
